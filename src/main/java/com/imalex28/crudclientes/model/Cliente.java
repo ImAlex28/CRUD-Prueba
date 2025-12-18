@@ -9,6 +9,10 @@ public class Cliente {
 	
 	
 	
+	public Cliente() {
+	}
+
+
 	public Cliente(Long idCliente, String nombre, String apellidos, String dni, String email) {
 		this.idCliente = idCliente;
 		this.nombre = nombre;

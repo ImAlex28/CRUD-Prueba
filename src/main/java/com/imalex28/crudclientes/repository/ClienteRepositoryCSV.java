@@ -12,7 +12,7 @@ import com.imalex28.crudclientes.model.Cliente;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.Path;
 
-@ApplicationScoped  
+@ApplicationScoped 
 public class ClienteRepositoryCSV implements ClienteRepository{
 	
 	private static final String FILE_PATH="Clientes.csv";
