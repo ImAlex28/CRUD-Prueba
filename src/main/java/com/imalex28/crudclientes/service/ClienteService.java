@@ -7,12 +7,14 @@ import com.imalex28.crudclientes.repository.ClienteRepository;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import jakarta.ws.rs.NotFoundException;
 
 @ApplicationScoped
 public class ClienteService {
 
     @Inject
+    @Named("jpa")
     ClienteRepository clienteRepository;
 
     public List<Cliente> findAll() {
