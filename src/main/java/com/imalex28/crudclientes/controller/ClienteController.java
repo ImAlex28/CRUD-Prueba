@@ -4,10 +4,14 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.inject.Inject;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
 
 import java.util.List;
 import java.util.Map;
 
+import com.imalex28.crudclientes.dto.ClienteRequestDTO;
+import com.imalex28.crudclientes.mapper.ClienteRequestMapper;
 import com.imalex28.crudclientes.model.Cliente;
 import com.imalex28.crudclientes.model.Cuenta;
 import com.imalex28.crudclientes.service.ClienteService;
@@ -25,6 +29,9 @@ public class ClienteController {
 	@Inject
 	CuentaService cuentaService;
 	
+	@Inject
+	ClienteRequestMapper clienteRequestMapper;
+	
 	@GET  // GET /clientes
 	@Produces(MediaType.APPLICATION_JSON)  // Devuelve un JSON
 	public List<Cliente> listAll() {
@@ -41,11 +48,12 @@ public class ClienteController {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response create(Cliente cliente) {
+	public Response create(ClienteRequestDTO clienteDTO) {
+	    Cliente cliente = clienteRequestMapper.toCliente(clienteDTO);
 	    clienteService.save(cliente);
-	    return Response.status(Response.Status.CREATED) //Devolvemos 201 y el objeto creado
-        .entity(cliente)
-        .build();// 201 = Created
+		return Response.status(Response.Status.CREATED)
+		 .entity(Map.of("id", cliente.getIdCliente()))
+		 .build();	
 	}
 	
 	@PUT
