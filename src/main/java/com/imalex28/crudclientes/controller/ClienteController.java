@@ -4,14 +4,14 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.inject.Inject;
-import jakarta.json.Json;
-import jakarta.json.JsonObject;
 
 import java.util.List;
 import java.util.Map;
 
 import com.imalex28.crudclientes.dto.ClienteRequestDTO;
+import com.imalex28.crudclientes.dto.ClienteResponseDTO;
 import com.imalex28.crudclientes.mapper.ClienteRequestMapper;
+import com.imalex28.crudclientes.mapper.ClienteResponseMapper;
 import com.imalex28.crudclientes.model.Cliente;
 import com.imalex28.crudclientes.model.Cuenta;
 import com.imalex28.crudclientes.service.ClienteService;
@@ -25,24 +25,26 @@ public class ClienteController {
 	
 	@Inject              
     ClienteService clienteService; 
-	
 	@Inject
 	CuentaService cuentaService;
-	
 	@Inject
 	ClienteRequestMapper clienteRequestMapper;
+	@Inject
+	ClienteResponseMapper clienteResponseMapper;
 	
 	@GET  // GET /clientes
 	@Produces(MediaType.APPLICATION_JSON)  // Devuelve un JSON
-	public List<Cliente> listAll() {
-	    return clienteService.findAll();
+	public List<ClienteResponseDTO> listAll() {
+	    List<Cliente> clientes = clienteService.findAll();
+	    return clienteResponseMapper.toClienteResponseDTOList(clientes);
 	}
 	
 	@GET
 	@Path("/{id}") 
 	@Produces(MediaType.APPLICATION_JSON)
-	public Cliente findById(@PathParam("id") Long id) {
-		return clienteService.findById(id);
+	public ClienteResponseDTO findById(@PathParam("id") Long id) {
+		Cliente cliente = clienteService.findById(id);
+		return clienteResponseMapper.toClienteResponseDTO(cliente);
 	}
 	
 	@POST

@@ -1,10 +1,11 @@
 package com.imalex28.crudclientes.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.annotation.Nonnull;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class ClienteRequestDTO {
+public class ClienteResponseDTO {
+	@Nonnull
+	public Long id;
+	
 	@Nonnull
 	public String nombre;
 	
@@ -17,14 +18,12 @@ public class ClienteRequestDTO {
 	@Nonnull
 	public String email;
 
-	public ClienteRequestDTO() {
+	public Long getId() {
+		return id;
 	}
 
-	public ClienteRequestDTO(String nombre, String apellidos, String dni, String email) {
-		this.nombre = nombre;
-		this.apellidos = apellidos;
-		this.dni = dni;
-		this.email = email;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getNombre() {
@@ -58,5 +57,15 @@ public class ClienteRequestDTO {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
+
+	public ClienteResponseDTO() {
+	}
+
+	public ClienteResponseDTO(Long id, String nombre, String apellidos, String dni, String email) {
+		this.id = id;
+		this.nombre = nombre;
+		this.apellidos = apellidos;
+		this.dni = dni;
+		this.email = email;
+	}
 }
