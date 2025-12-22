@@ -9,5 +9,6 @@ public interface ClienteRepository {
     void save(Cliente cliente);
     void update(Cliente cliente);
     void delete(Long id);
+    boolean existsById(Long idCliente);
 }
 

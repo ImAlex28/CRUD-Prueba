@@ -45,6 +45,17 @@ public class ClienteRepositoryJPA implements ClienteRepository{
         Cliente cliente = em.find(Cliente.class, id);
         em.remove(cliente);
     }
+    
+    @Override
+    public boolean existsById(Long idCliente) {
+        return !em.createQuery(
+                "SELECT 1 FROM Cliente c WHERE c.idCliente = :id")
+            .setParameter("id", idCliente)
+            .setMaxResults(1)
+            .getResultList()
+            .isEmpty();
+    }
+
 }
 
 

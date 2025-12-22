@@ -1,0 +1,9 @@
+diff a/src/main/resources/clientes.csv b/src/main/resources/clientes.csv	(rejected hunks)
+@@ -2 +3,7 @@
++<<<<<<< HEAD
+ 
++=======
++idCliente	nombre	apellidos	dni	email
++1	Juan	P�rez	11111111t	juan.perez@mail.com
++2	Ana	G�mez	87654321J	ana.gomez@mail.com
++>>>>>>> origin/main
