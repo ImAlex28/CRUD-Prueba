@@ -2,7 +2,6 @@ package com.imalex28.crudclientes.controller;
 
 import java.util.List;
 
-import com.imalex28.crudclientes.model.Cliente;
 import com.imalex28.crudclientes.model.Cuenta;
 import com.imalex28.crudclientes.service.CuentaService;
 
