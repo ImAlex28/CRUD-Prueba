@@ -2,6 +2,12 @@ package com.imalex28.crudclientes.controller;
 
 import java.util.List;
 
+import com.imalex28.crudclientes.dto.CuentaRequestDTO;
+import com.imalex28.crudclientes.dto.CuentaResponseDTO;
+import com.imalex28.crudclientes.mapper.ClienteRequestMapper;
+import com.imalex28.crudclientes.mapper.ClienteResponseMapper;
+import com.imalex28.crudclientes.mapper.CuentaRequestMapper;
+import com.imalex28.crudclientes.mapper.CuentaResponseMapper;
 import com.imalex28.crudclientes.model.Cuenta;
 import com.imalex28.crudclientes.service.CuentaService;
 
@@ -25,22 +31,35 @@ public class CuentaController {
 	@Inject
 	CuentaService cuentaService;
 	
+	@Inject
+	ClienteRequestMapper clienteRequestMapper;
+	@Inject
+	ClienteResponseMapper clienteResponseMapper;
+	
+	@Inject
+	CuentaRequestMapper cuentaRequestMapper;
+	@Inject
+	CuentaResponseMapper cuentaResponseMapper;
+	
 	@GET //GET /cuentas
 	@Produces(MediaType.APPLICATION_JSON)  // Devuelve un JSON
-	public List<Cuenta> listAll() {
-	    return cuentaService.findAll();
+	public List<CuentaResponseDTO> listAll() {
+		List<Cuenta> cuentas = cuentaService.findAll();
+	    return cuentaResponseMapper.toCuentaResponseDTOList(cuentas);
 	}
 	
 	@GET //GET /cuentas/{id}
 	@Path("/{id}") 
 	@Produces(MediaType.APPLICATION_JSON)
-	public Cuenta findById(@PathParam("id") Long id) {
-		return cuentaService.findById(id);
+	public CuentaResponseDTO findById(@PathParam("id") Long id) {
+		Cuenta cuenta = cuentaService.findById(id);
+		return cuentaResponseMapper.toCuentaResponseDTO(cuenta);
 	}
 	
 	@POST //POST /cuentas
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response create(Cuenta cuenta) {
+	public Response create(CuentaRequestDTO cuentaDTO) {
+		Cuenta cuenta = cuentaRequestMapper.toCuenta(cuentaDTO);
 		cuentaService.save(cuenta);
 	    return Response.status(201).build();  // 201 = Created
 	}
@@ -48,7 +67,8 @@ public class CuentaController {
 	
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response update(Cuenta cuenta) {
+	public Response update(CuentaRequestDTO cuentaDTO) {
+		Cuenta cuenta = cuentaRequestMapper.toCuenta(cuentaDTO);
 		cuentaService.update(cuenta);
 	    return Response.ok().build();  // 200 OK
 	}
@@ -59,8 +79,5 @@ public class CuentaController {
 		cuentaService.delete(id);
 		return Response.noContent().build(); 
 	}
-
-
-	
 	
 }

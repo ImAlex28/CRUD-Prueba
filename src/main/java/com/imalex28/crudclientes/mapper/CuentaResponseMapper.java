@@ -12,7 +12,7 @@ import com.imalex28.crudclientes.model.Cuenta;
 public interface CuentaResponseMapper {
     // Mapear Entidad a DTO
     @Mapping(source = "idCuenta", target = "idCuenta")
-    @Mapping(source = "cliente", target = "cliente")
+    @Mapping(source = "idCliente", target = "cliente")
     @Mapping(source = "numeroCuenta", target = "numeroCuenta")
     @Mapping(source = "tipoCuenta", target = "tipoCuenta")
     @Mapping(source = "saldo", target = "saldo")
