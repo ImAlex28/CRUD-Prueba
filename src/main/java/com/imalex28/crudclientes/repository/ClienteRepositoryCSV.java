@@ -124,5 +124,11 @@ public class ClienteRepositoryCSV implements ClienteRepository{
 	    escribirCSV(clientes);
 		
 	}
+
+	@Override
+	public boolean existsById(Long idCliente) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 }
