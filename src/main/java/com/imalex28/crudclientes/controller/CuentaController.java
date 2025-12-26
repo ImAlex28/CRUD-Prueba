@@ -2,13 +2,16 @@ package com.imalex28.crudclientes.controller;
 
 import java.util.List;
 
+import com.imalex28.crudclientes.dto.CuentaUpdateDTO;
 import com.imalex28.crudclientes.dto.CuentaRequestDTO;
 import com.imalex28.crudclientes.dto.CuentaResponseDTO;
 import com.imalex28.crudclientes.mapper.ClienteRequestMapper;
 import com.imalex28.crudclientes.mapper.ClienteResponseMapper;
+import com.imalex28.crudclientes.mapper.CuentaUpdateMapper;
 import com.imalex28.crudclientes.mapper.CuentaRequestMapper;
 import com.imalex28.crudclientes.mapper.CuentaResponseMapper;
 import com.imalex28.crudclientes.model.Cuenta;
+import com.imalex28.crudclientes.service.ClienteService;
 import com.imalex28.crudclientes.service.CuentaService;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -32,6 +35,9 @@ public class CuentaController {
 	CuentaService cuentaService;
 	
 	@Inject
+	ClienteService clienteService;
+	
+	@Inject
 	ClienteRequestMapper clienteRequestMapper;
 	@Inject
 	ClienteResponseMapper clienteResponseMapper;
@@ -40,6 +46,8 @@ public class CuentaController {
 	CuentaRequestMapper cuentaRequestMapper;
 	@Inject
 	CuentaResponseMapper cuentaResponseMapper;
+	@Inject
+	CuentaUpdateMapper cuentaPutMapper;
 	
 	@GET //GET /cuentas
 	@Produces(MediaType.APPLICATION_JSON)  // Devuelve un JSON
@@ -59,7 +67,7 @@ public class CuentaController {
 	@POST //POST /cuentas
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response create(CuentaRequestDTO cuentaDTO) {
-		Cuenta cuenta = cuentaRequestMapper.toCuenta(cuentaDTO);
+		Cuenta cuenta = cuentaRequestMapper.toCuenta(cuentaDTO, clienteService);
 		cuentaService.save(cuenta);
 	    return Response.status(201).build();  // 201 = Created
 	}
@@ -67,8 +75,8 @@ public class CuentaController {
 	
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response update(CuentaRequestDTO cuentaDTO) {
-		Cuenta cuenta = cuentaRequestMapper.toCuenta(cuentaDTO);
+	public Response update(CuentaUpdateDTO cuentaDTO) {
+		Cuenta cuenta = cuentaPutMapper.toCuenta(cuentaDTO, clienteService);
 		cuentaService.update(cuenta);
 	    return Response.ok().build();  // 200 OK
 	}

@@ -10,8 +10,12 @@ import java.util.Map;
 
 import com.imalex28.crudclientes.dto.ClienteRequestDTO;
 import com.imalex28.crudclientes.dto.ClienteResponseDTO;
+import com.imalex28.crudclientes.dto.ClienteUpdateDTO;
+import com.imalex28.crudclientes.dto.CuentaResponseDTO;
 import com.imalex28.crudclientes.mapper.ClienteRequestMapper;
 import com.imalex28.crudclientes.mapper.ClienteResponseMapper;
+import com.imalex28.crudclientes.mapper.ClienteUpdateMapper;
+import com.imalex28.crudclientes.mapper.CuentaResponseMapper;
 import com.imalex28.crudclientes.model.Cliente;
 import com.imalex28.crudclientes.model.Cuenta;
 import com.imalex28.crudclientes.service.ClienteService;
@@ -31,6 +35,10 @@ public class ClienteController {
 	ClienteRequestMapper clienteRequestMapper;
 	@Inject
 	ClienteResponseMapper clienteResponseMapper;
+	@Inject
+	ClienteUpdateMapper clienteUpdateMapper;
+	@Inject
+	CuentaResponseMapper cuentaResponseMapper;
 	
 	@GET  // GET /clientes
 	@Produces(MediaType.APPLICATION_JSON)  // Devuelve un JSON
@@ -60,7 +68,8 @@ public class ClienteController {
 	
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response update(Cliente cliente) {
+	public Response update(ClienteUpdateDTO clienteDTO) {
+		Cliente cliente = clienteUpdateMapper.toCliente(clienteDTO);
 	    clienteService.update(cliente);
 	    return Response.ok().build();  // 200 OK
 	}
@@ -75,8 +84,10 @@ public class ClienteController {
 	@GET // GET /clientes/id/cuentas
 	@Path("/{id}/cuentas")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<Cuenta> findCuentasCliente(@PathParam("id") Long id) {
-		return cuentaService.findByIdCliente(id);
+	public List<CuentaResponseDTO> findCuentasCliente(@PathParam("id") Long id) {
+		List<Cuenta> cuentas = cuentaService.findByIdCliente(id);
+		List<CuentaResponseDTO> cuentasDTO = cuentaResponseMapper.toCuentaResponseDTOList(cuentas);
+		return cuentasDTO;
 	}
 	
 	@POST // POST /clientes/id/cuentas
