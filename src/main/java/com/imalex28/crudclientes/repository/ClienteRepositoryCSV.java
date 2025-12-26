@@ -6,13 +6,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
-
 import com.imalex28.crudclientes.model.Cliente;
-
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.ws.rs.Path;
+import jakarta.inject.Named;
 
-@ApplicationScoped  
+@ApplicationScoped 
+@Named("csv")
 public class ClienteRepositoryCSV implements ClienteRepository{
 	
 	private static final String FILE_PATH="Clientes.csv";
