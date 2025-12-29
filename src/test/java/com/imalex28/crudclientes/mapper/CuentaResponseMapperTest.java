@@ -121,4 +121,5 @@ public class CuentaResponseMapperTest {
     List<CuentaResponseDTO> list = mapper.toCuentaResponseDTOList(null);
     assertNull(list);
   }
+  
 }
