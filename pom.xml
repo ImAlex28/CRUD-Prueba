@@ -38,6 +38,20 @@
             <artifactId>quarkus-junit5</artifactId>
             <scope>test</scope>
         </dependency>
+        
+		<dependency>
+		    <groupId>io.quarkus</groupId>
+		    <artifactId>quarkus-junit5-mockito</artifactId>
+		    <scope>test</scope>
+		</dependency>
+		
+		<dependency>
+		    <groupId>io.quarkus</groupId>
+		    <artifactId>quarkus-jacoco</artifactId>
+		    <scope>test</scope>
+		</dependency>
+
+
         <!-- Cosas para el H2 -->
 	    <dependency>
 	        <groupId>io.quarkus</groupId>
@@ -89,6 +103,55 @@
                     </execution>
                 </executions>
             </plugin>
+			<plugin>
+			      <groupId>org.jacoco</groupId>
+			      <artifactId>jacoco-maven-plugin</artifactId>
+			      <version>0.8.10</version>
+			      <executions>
+			        <execution>
+			          <id>prepare-agent</id>
+			          <goals>
+			            <goal>prepare-agent</goal>
+			          </goals>
+			        </execution>		
+			        <!-- Genera reporte de unit tests -->
+			        <execution>
+			          <id>report</id>
+			          <phase>test</phase>
+			          <goals>
+			            <goal>report</goal>
+			          </goals>
+			        </execution>
+
+			        <!-- Enforce cobertura mínima -->
+			        <execution>
+			          <id>jacoco-check</id>
+			          <phase>verify</phase>
+			          <goals>
+			            <goal>check</goal>
+			          </goals>
+			          <configuration>
+			            <rules>
+			              <rule>
+			                <element>BUNDLE</element>
+			                <limits>
+			                  <limit>
+			                    <counter>LINE</counter>
+			                    <value>COVEREDRATIO</value>
+			                    <minimum>0.80</minimum> <!-- 80% mínimo -->
+			                  </limit>
+			                </limits>
+			              </rule>
+			            </rules>
+			            <!-- excluir clases/paquetes del cómputo -->
+			            <excludes>
+			              <exclude>**/dto/**</exclude>
+			              <exclude>**/generated/**</exclude>
+			            </excludes>
+			          </configuration>
+			        </execution>
+			      </executions>
+			    </plugin>
         </plugins>
     </build>
 </project>
