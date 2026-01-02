@@ -40,7 +40,6 @@ class CuentaControllerUnitTest {
 
     @Test
     void listAll_devuelve_lista_dtos() {
-        // given
         Cuenta c1 = new Cuenta(); c1.setIdCuenta(1L);
         Cuenta c2 = new Cuenta(); c2.setIdCuenta(2L);
         when(cuentaService.findAll()).thenReturn(List.of(c1, c2));
@@ -50,10 +49,8 @@ class CuentaControllerUnitTest {
         when(cuentaResponseMapper.toCuentaResponseDTOList(List.of(c1, c2)))
                 .thenReturn(List.of(dto1, dto2));
 
-        // when
         List<CuentaResponseDTO> result = controller.listAll();
 
-        // then
         assertNotNull(result);
         assertEquals(2, result.size());
         assertEquals(1L, result.get(0).getIdCuenta());
@@ -77,6 +74,15 @@ class CuentaControllerUnitTest {
         assertEquals(id, result.getIdCuenta());
         verify(cuentaService).findById(id);
         verify(cuentaResponseMapper).toCuentaResponseDTO(cuenta);
+    }
+    
+    @Test
+    void findById_si_service_lanza_excepcion_se_propaga() {
+        Long id = 123L;
+        when(cuentaService.findById(id)).thenThrow(new RuntimeException("no encontrado"));
+
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> controller.findById(id));
+        assertEquals("no encontrado", ex.getMessage());
     }
 
     @Test
@@ -116,12 +122,4 @@ class CuentaControllerUnitTest {
         verify(cuentaService).delete(5L);
     }
 
-    @Test
-    void findById_si_service_lanza_excepcion_se_propaga() {
-        Long id = 123L;
-        when(cuentaService.findById(id)).thenThrow(new RuntimeException("no encontrado"));
-
-        RuntimeException ex = assertThrows(RuntimeException.class, () -> controller.findById(id));
-        assertEquals("no encontrado", ex.getMessage());
-    }
 }
