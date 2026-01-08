@@ -3,15 +3,8 @@
     <factorypathentry kind="VARJAR" id="M2_REPO/io/quarkus/quarkus-resteasy-reactive-common/3.8.5/quarkus-resteasy-reactive-common-3.8.5.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/io/quarkus/resteasy/reactive/resteasy-reactive-common/3.8.5/resteasy-reactive-common-3.8.5.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/io/quarkus/resteasy/reactive/resteasy-reactive-common-types/3.8.5/resteasy-reactive-common-types-3.8.5.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="M2_REPO/io/smallrye/reactive/mutiny/2.5.8/mutiny-2.5.8.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/reactivestreams/reactive-streams/1.0.4/reactive-streams-1.0.4.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/io/smallrye/common/smallrye-common-annotation/2.2.0/smallrye-common-annotation-2.2.0.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="M2_REPO/io/quarkus/quarkus-mutiny/3.8.5/quarkus-mutiny-3.8.5.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="M2_REPO/io/quarkus/quarkus-smallrye-context-propagation/3.8.5/quarkus-smallrye-context-propagation-3.8.5.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="M2_REPO/io/smallrye/smallrye-context-propagation/2.1.0/smallrye-context-propagation-2.1.0.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="M2_REPO/io/smallrye/smallrye-context-propagation-api/2.1.0/smallrye-context-propagation-api-2.1.0.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="M2_REPO/io/smallrye/smallrye-context-propagation-storage/2.1.0/smallrye-context-propagation-storage-2.1.0.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="M2_REPO/io/smallrye/reactive/mutiny-smallrye-context-propagation/2.5.8/mutiny-smallrye-context-propagation-2.5.8.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/io/quarkus/quarkus-vertx/3.8.5/quarkus-vertx-3.8.5.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/io/quarkus/quarkus-netty/3.8.5/quarkus-netty-3.8.5.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/io/netty/netty-codec/4.1.108.Final/netty-codec-4.1.108.Final.jar" enabled="true" runInBatchMode="false"/>
@@ -94,6 +87,13 @@
     <factorypathentry kind="VARJAR" id="M2_REPO/org/wildfly/common/wildfly-common/1.7.0.Final/wildfly-common-1.7.0.Final.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/io/quarkus/quarkus-bootstrap-runner/3.8.5/quarkus-bootstrap-runner-3.8.5.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/io/quarkus/quarkus-fs-util/0.0.10/quarkus-fs-util-0.0.10.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/io/quarkus/quarkus-mutiny/3.8.5/quarkus-mutiny-3.8.5.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/io/smallrye/reactive/mutiny/2.5.8/mutiny-2.5.8.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/io/quarkus/quarkus-smallrye-context-propagation/3.8.5/quarkus-smallrye-context-propagation-3.8.5.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/io/smallrye/smallrye-context-propagation/2.1.0/smallrye-context-propagation-2.1.0.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/io/smallrye/smallrye-context-propagation-api/2.1.0/smallrye-context-propagation-api-2.1.0.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/io/smallrye/smallrye-context-propagation-storage/2.1.0/smallrye-context-propagation-storage-2.1.0.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/io/smallrye/reactive/mutiny-smallrye-context-propagation/2.5.8/mutiny-smallrye-context-propagation-2.5.8.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/io/quarkus/quarkus-hibernate-orm/3.8.5/quarkus-hibernate-orm-3.8.5.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/io/quarkus/quarkus-agroal/3.8.5/quarkus-agroal-3.8.5.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/io/quarkus/quarkus-datasource/3.8.5/quarkus-datasource-3.8.5.jar" enabled="true" runInBatchMode="false"/>
