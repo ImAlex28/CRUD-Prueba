@@ -6,9 +6,14 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 @Entity
-@Table(name="cliente")
+@Table(name="cliente", 
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"email"})
+    }
+)
 public class Cliente {
 	
 	@Id
@@ -19,6 +24,8 @@ public class Cliente {
 	private String nombre;
 	private String apellidos;
 	private String dni;
+	
+	@Column(nullable = false, length = 255)
 	private String email;
 
     public Cliente() {} 

@@ -5,7 +5,7 @@ import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import com.imalex28.crudclientes.dto.ClienteResponseDTO;
+import com.imalex28.crudclientes.dto.client.ClienteResponseDTO;
 import com.imalex28.crudclientes.model.Cliente;
 
 @Mapper(componentModel = "cdi")

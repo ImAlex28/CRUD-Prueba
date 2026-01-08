@@ -8,10 +8,10 @@ import jakarta.inject.Inject;
 import java.util.List;
 import java.util.Map;
 
-import com.imalex28.crudclientes.dto.ClienteRequestDTO;
-import com.imalex28.crudclientes.dto.ClienteResponseDTO;
-import com.imalex28.crudclientes.dto.ClienteUpdateDTO;
-import com.imalex28.crudclientes.dto.CuentaResponseDTO;
+import com.imalex28.crudclientes.dto.account.CuentaResponseDTO;
+import com.imalex28.crudclientes.dto.client.ClienteRequestDTO;
+import com.imalex28.crudclientes.dto.client.ClienteResponseDTO;
+import com.imalex28.crudclientes.dto.client.ClienteUpdateDTO;
 import com.imalex28.crudclientes.mapper.ClienteRequestMapper;
 import com.imalex28.crudclientes.mapper.ClienteResponseMapper;
 import com.imalex28.crudclientes.mapper.ClienteUpdateMapper;

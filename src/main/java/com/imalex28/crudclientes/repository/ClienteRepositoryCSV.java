@@ -130,5 +130,11 @@ public class ClienteRepositoryCSV implements ClienteRepository{
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	@Override
+	public Cliente findByEmail(String email) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

@@ -7,7 +7,7 @@ import org.mapstruct.Mapping;
 
 import org.mapstruct.Named;
 
-import com.imalex28.crudclientes.dto.CuentaUpdateDTO;
+import com.imalex28.crudclientes.dto.account.CuentaUpdateDTO;
 import com.imalex28.crudclientes.model.Cliente;
 import com.imalex28.crudclientes.model.Cuenta;
 import com.imalex28.crudclientes.service.ClienteService;
