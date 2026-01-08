@@ -1,1 +1,9 @@
-/target/
+# Build (Maven)
+target/
+
+# Config sensible
+src/main/resources/application.properties
+
+# Logs
+*.log
+

@@ -5,6 +5,7 @@ import java.util.List;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Named;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
@@ -55,6 +56,21 @@ public class ClienteRepositoryJPA implements ClienteRepository{
             .getResultList()
             .isEmpty();
     }
+    
+    @Override
+    public Cliente findByEmail(String email) {
+        try {
+            return em.createQuery(
+                    "SELECT c FROM Cliente c WHERE LOWER(c.email) = :email",
+                    Cliente.class
+                )
+                .setParameter("email", email == null ? null : email.toLowerCase())
+                .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
 
 }
 

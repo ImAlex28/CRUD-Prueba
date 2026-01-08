@@ -1,0 +1,54 @@
+# Desactivar syslog
+quarkus.log.socket.syslog.enabled=false
+
+# Configuraci�n m�nima de logging
+quarkus.log.console.enable=true
+quarkus.log.level=INFO
+
+# Configuraci�n de la base de datos H2
+quarkus.datasource.db-kind=h2
+quarkus.datasource.username=sa
+quarkus.datasource.password=
+quarkus.datasource.jdbc.url=jdbc:h2:mem:test
+
+# Hibernate crea las tablas autom�ticamente
+quarkus.hibernate-orm.database.generation=drop-and-create
+
+# Ver las queries SQL en la consola para tener feedback
+quarkus.hibernate-orm.log.sql=true
+
+# Consola web de H2
+quarkus.h2.console.enabled=true
+
+# Ruta de la consola web de H2
+quarkus.h2.console.path=/h2
+
+# Config de test
+
+%test.quarkus.hibernate-orm.sql-load-script=no-file
+%test.quarkus.hibernate-orm.database.generation=drop-and-create
+quarkus.hibernate-orm.log.sql=true
+
+# Para que las clases que usan @QuarkusTest las detecte jacoco
+quarkus.package.write-transformed-bytecode-to-build-output=true
+
+# Config de sonar
+
+sonar.java.coveragePlugin=jacoco
+sonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+
+
+# Configuraci�n del cliente REST para la API de pa�ses
+countries-api/mp-rest/url=https://restcountries.com
+countries-api/mp-rest/connectTimeout=5000
+countries-api/mp-rest/readTimeout=5000
+
+# Token para la API de IP
+ip.api.token=insert-your-token
+
+# Configuración del cliente REST para la API de IP
+countries-api/mp-rest/url=https://api.ipinfo.io
+countries-api/mp-rest/connectTimeout=5000
+countries-api/mp-rest/readTimeout=5000
+
+

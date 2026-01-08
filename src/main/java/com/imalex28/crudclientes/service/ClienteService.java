@@ -2,6 +2,7 @@ package com.imalex28.crudclientes.service;
 
 import java.util.List;
 
+import com.imalex28.crudclientes.dto.ErrorResponseDTO;
 import com.imalex28.crudclientes.model.Cliente;
 import com.imalex28.crudclientes.repository.ClienteRepository;
 
@@ -9,6 +10,9 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 @ApplicationScoped
 public class ClienteService {
@@ -32,8 +36,27 @@ public class ClienteService {
     }
 
     public void save(Cliente cliente) {
-    	// Llamamos directamente al servicio de la capa Repo
-        clienteRepository.save(cliente);
+
+        String emailNorm = normalizeEmail(cliente.getEmail());
+
+        cliente.setEmail(emailNorm);
+
+
+
+        // Check de unicidad
+             Cliente existente = clienteRepository.findByEmail(emailNorm);
+				if (existente != null) {
+				        throw new WebApplicationException(
+				            Response.status(Response.Status.CONFLICT)
+				                    .type(MediaType.APPLICATION_JSON)
+				                    .entity(new ErrorResponseDTO(409, "Ya existe un cliente con el email " + emailNorm))
+				                    .build()
+				        );
+
+				} 
+     	// Llamamos directamente al servicio de la capa Repo
+         clienteRepository.save(cliente);
+
     }
 
     public void update(Cliente cliente) {
@@ -55,4 +78,10 @@ public class ClienteService {
         // Si existe, ya llamamos al delete
         clienteRepository.delete(id);
     }
+    
+    // Métodos helper internos
+    private String normalizeEmail(String email) {
+        return email == null ? null : email.trim().toLowerCase();
+    }
+
 }

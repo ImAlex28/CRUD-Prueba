@@ -10,5 +10,6 @@ public interface ClienteRepository {
     void update(Cliente cliente);
     void delete(Long id);
     boolean existsById(Long idCliente);
+    Cliente findByEmail(String email);
 }
 

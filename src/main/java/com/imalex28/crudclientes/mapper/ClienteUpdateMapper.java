@@ -4,7 +4,7 @@ package com.imalex28.crudclientes.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import com.imalex28.crudclientes.dto.ClienteUpdateDTO;
+import com.imalex28.crudclientes.dto.client.ClienteUpdateDTO;
 import com.imalex28.crudclientes.model.Cliente;
 
 @Mapper(componentModel = "cdi")
