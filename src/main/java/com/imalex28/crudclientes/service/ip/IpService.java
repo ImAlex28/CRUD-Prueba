@@ -1,5 +1,6 @@
-package com.imalex28.crudclientes.service.ip;
+/*package com.imalex28.crudclientes.service.ip;
 
+FILE NO LONGER NEEDED, SAFE TO DELETE, FILE WAS REPLACED BY IpCacheService.java
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import com.imalex28.crudclientes.apiclient.IPApiClient;
@@ -28,3 +29,5 @@ public class IpService {
 			return ipResponse;
 		}
 }
+
+*/
