@@ -1,4 +1,4 @@
-package com.imalex28.crudclientes.model;
+ 	package com.imalex28.crudclientes.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
