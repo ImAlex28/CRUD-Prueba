@@ -36,9 +36,11 @@ public class CountryCacheService {
     RedisDataSource redis;
 
     @Inject
+	private
     ObjectMapper objectMapper;
 
     @ConfigProperty(name = "country.cache.ttl.millis", defaultValue = "300000")
+	private
     long ttlMillis;
 
     // Cambia el nombre si quieres versionar el formato
@@ -48,6 +50,7 @@ public class CountryCacheService {
     private KeyCommands<String> keyCmds;
 
     @PostConstruct
+	public
     void init() {
         // Comandos tipados para String->String
         this.valueCmds = redis.value(String.class);
@@ -66,7 +69,7 @@ public class CountryCacheService {
 
         if (cachedJson != null) {
             try {
-                return objectMapper.readValue(cachedJson, new TypeReference<List<CountryResponseDTO>>() {});
+                return getObjectMapper().readValue(cachedJson, new TypeReference<List<CountryResponseDTO>>() {});
             } catch (Exception e) {
                 LOG.warnf(e, "Fallo deserializando JSON de la cache Redis para la key %s", CACHE_KEY);
                 // Continuamos con MISS
@@ -87,8 +90,8 @@ public class CountryCacheService {
 
         // 3) Guardar en Redis con TTL
         try {
-            String json = objectMapper.writeValueAsString(countries);
-            int ttlSeconds = (int) Math.max(1, ttlMillis / 1000); // SETEX usa segundos
+            String json = getObjectMapper().writeValueAsString(countries);
+            int ttlSeconds = (int) Math.max(1, getTtlMillis() / 1000); // SETEX usa segundos
             valueCmds.setex(CACHE_KEY, ttlSeconds, json);
         } catch (Exception e) {
             LOG.warnf(e, "No se pudo escribir en Redis la key %s", CACHE_KEY);
@@ -104,4 +107,20 @@ public class CountryCacheService {
             LOG.warnf(e, "No se pudo invalidar la cache Redis para la key %s", CACHE_KEY);
         }
     }
+
+	public long getTtlMillis() {
+		return ttlMillis;
+	}
+
+	public void setTtlMillis(long ttlMillis) {
+		this.ttlMillis = ttlMillis;
+	}
+
+	public ObjectMapper getObjectMapper() {
+		return objectMapper;
+	}
+
+	public void setObjectMapper(ObjectMapper objectMapper) {
+		this.objectMapper = objectMapper;
+	}
 }

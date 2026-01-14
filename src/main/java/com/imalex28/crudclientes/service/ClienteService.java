@@ -80,7 +80,7 @@ public class ClienteService {
     }
     
     // Métodos helper internos
-    private String normalizeEmail(String email) {
+    public String normalizeEmail(String email) {
         return email == null ? null : email.trim().toLowerCase();
     }
 

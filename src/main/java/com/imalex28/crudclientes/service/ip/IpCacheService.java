@@ -21,6 +21,7 @@ public class IpCacheService {
     IPApiClient client;
 
     @ConfigProperty(name = "ip.cache.ttl.millis", defaultValue = "6000")
+	private
     long ttlMillis;
 
     private final Map<String, CacheEntry<IPResponseDTO>> cache = new ConcurrentHashMap<>();
@@ -55,7 +56,7 @@ public class IpCacheService {
         ipResponse.setAs_domain(externalResult.getAs_domain());
 
         // Guardar en caché con nueva expiración
-        cache.put(key, new CacheEntry<>(ipResponse, System.currentTimeMillis() + ttlMillis));
+        cache.put(key, new CacheEntry<>(ipResponse, System.currentTimeMillis() + getTtlMillis()));
         return ipResponse;
     }
 
@@ -64,7 +65,16 @@ public class IpCacheService {
         cache.clear();
     }
 
-    private static final class CacheEntry<T> {
+    public long getTtlMillis() {
+		return ttlMillis;
+	}
+
+
+	public void setTtlMillis(long ttlMillis) {
+		this.ttlMillis = ttlMillis;
+	}
+
+	private static final class CacheEntry<T> {
         private final T value;
         private final long expiryMillis;
 

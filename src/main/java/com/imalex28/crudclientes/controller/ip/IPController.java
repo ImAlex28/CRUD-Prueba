@@ -24,6 +24,7 @@ public class IPController {
 	@Inject IpCacheService ipService;
 
     @ConfigProperty(name = "ip.api.token")
+	private
     String token;
 
 	
@@ -31,7 +32,7 @@ public class IPController {
 	@Path("/{ip}")
     @Produces(MediaType.APPLICATION_JSON)
 	public IPResponseDTO getCountries(@PathParam("ip") String ip) {
-	      return ipService.getIP( ip , token);
+	      return ipService.getIP( ip , getToken());
 	}
 	
     @DELETE
@@ -41,4 +42,12 @@ public class IPController {
     	ipService.invalidateAll();
         return Response.noContent().build(); // HTTP 204
     }
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
 }
