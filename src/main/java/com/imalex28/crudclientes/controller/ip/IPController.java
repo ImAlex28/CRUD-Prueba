@@ -6,7 +6,6 @@ import com.imalex28.crudclientes.dto.ip.IPResponseDTO;
 import com.imalex28.crudclientes.service.ip.IpCacheService;
 
 import io.quarkus.security.Authenticated;
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.DELETE;
