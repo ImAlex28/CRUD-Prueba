@@ -2,7 +2,7 @@ package com.imalex28.crudclientes.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import com.imalex28.crudclientes.dto.ClienteRequestDTO;
+import com.imalex28.crudclientes.dto.client.ClienteRequestDTO;
 import com.imalex28.crudclientes.model.Cliente;
 
 

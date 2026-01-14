@@ -2,9 +2,9 @@ package com.imalex28.crudclientes.controller;
 
 import java.util.List;
 
-import com.imalex28.crudclientes.dto.CuentaUpdateDTO;
-import com.imalex28.crudclientes.dto.CuentaRequestDTO;
-import com.imalex28.crudclientes.dto.CuentaResponseDTO;
+import com.imalex28.crudclientes.dto.account.CuentaRequestDTO;
+import com.imalex28.crudclientes.dto.account.CuentaResponseDTO;
+import com.imalex28.crudclientes.dto.account.CuentaUpdateDTO;
 import com.imalex28.crudclientes.mapper.ClienteRequestMapper;
 import com.imalex28.crudclientes.mapper.ClienteResponseMapper;
 import com.imalex28.crudclientes.mapper.CuentaUpdateMapper;
