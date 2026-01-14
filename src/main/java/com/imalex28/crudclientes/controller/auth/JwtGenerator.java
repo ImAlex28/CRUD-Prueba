@@ -27,7 +27,7 @@ public class JwtGenerator {
     String issuer;
 
     private RSAPrivateKey loadPrivateKey() throws Exception {
-        // Lee la privada en formato PKCS#8 (-----BEGIN PRIVATE KEY-----)
+        // Reads the private key in PKCS#8 format (-----BEGIN PRIVATE KEY-----)
         String pem = Files.readString(Paths.get(privateKeyPath));
         String clean = pem
                 .replace("-----BEGIN PRIVATE KEY-----", "")
@@ -39,12 +39,13 @@ public class JwtGenerator {
         return (RSAPrivateKey) KeyFactory.getInstance("RSA").generatePrivate(spec);
     }
 
+
     /**
-     * Genera un JWT RS256 con claims estándar para Quarkus:
-     * - sub: sujeto/usuario
-     * - iss: issuer (debe coincidir con mp.jwt.verify.issuer)
-     * - groups: roles para @RolesAllowed
-     * - iat, exp: emisión y expiración
+     * Generates an RS256 JWT with standard claims for Quarkus:
+     * - sub: subject/user
+     * - iss: issuer (must match mp.jwt.verify.issuer)
+     * - groups: roles for @RolesAllowed
+     * - iat, exp: issued at and expiration
      */
     public String generateToken(String subject, String[] groups, long ttlSeconds) throws Exception {
         RSAPrivateKey privateKey = loadPrivateKey();

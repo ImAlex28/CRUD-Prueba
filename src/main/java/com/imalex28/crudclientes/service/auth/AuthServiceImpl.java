@@ -14,6 +14,12 @@ import java.time.Instant;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * Authentication service with JWT issuance and embedded per-user cache.
+ * - Avoids recalculating tokens if the current one has not expired.
+ * - Uses ConcurrentHashMap and compute(key, ...) to prevent race conditions
+ *   (two threads will not generate two different tokens for the same user at the same time).
+ */
 @ApplicationScoped
 public class AuthServiceImpl implements AuthService {
 
@@ -24,90 +30,101 @@ public class AuthServiceImpl implements AuthService {
     @Inject
     JwtGenerator jwtGenerator;
 
-    // ======== Cache embebida ========
-    // Key: username/email ; Value: token + exp
+    //     Cache
+    /**
+     * Minimal cached structure: token + expiration.
+     * We do not store full claims to keep it simple and lightweight.
+     */
     private static final class CachedToken {
         private final String token;
-        private final long expEpochSeconds; // claim exp en epoch seconds
-        private CachedToken(String token, long expEpochSeconds) {
+        private final Instant expiration; // Exact moment when it expires
+
+        CachedToken(String token, Instant expiration) {
             this.token = token;
-            this.expEpochSeconds = expEpochSeconds;
+            this.expiration = expiration;
         }
-        String getToken() { return token; }
-        long getExpEpochSeconds() { return expEpochSeconds; }
+
+        String token() { return token; }
+
         boolean isExpired(long skewSeconds) {
-            long now = Instant.now().getEpochSecond();
-            return now + skewSeconds >= expEpochSeconds;
+            // If now + margin >= expiration, we consider it expired
+            Instant nowWithSkew = Instant.now().plusSeconds(skewSeconds);
+            return nowWithSkew.isAfter(expiration);
         }
     }
 
     private final ConcurrentHashMap<String, CachedToken> tokenCache = new ConcurrentHashMap<>();
 
-    // ======== Configuración ========
-    private static final long CLOCK_SKEW_SECONDS = 30L;   // margen para evitar tokens a punto de expirar
-    private static final int DEFAULT_TTL_SECONDS = 3600;  // 1h
+    //   Configuration
+    /** Margin to avoid tokens that expire “immediately” on the client side. */
+    private static final long CLOCK_SKEW_SECONDS = 30L;
+    /** TTL for the issued JWT (in seconds). */
+    private static final int DEFAULT_TTL_SECONDS = 3600; // 1 hour
 
+    //      Public API
     @Override
     @Transactional
     public String loginAndIssueToken(String username, String password) throws InvalidCredentialsException {
-        // 1) Buscar usuario
+        // 1) Find user
         Cliente client = clientRepository.findByEmail(username);
         if (client == null) {
             throw new InvalidCredentialsException();
         }
 
-        // 2) Verificar contraseña (educativo: aquí solo null-check; en real, hash + salt + timing-safe)
+        // 2) Verify password
         if (password == null) {
             throw new InvalidCredentialsException();
         }
 
+        // 3) Cache key per user
         String userKey = client.getEmail();
-        Objects.requireNonNull(userKey, "El email del cliente no debe ser null");
+        Objects.requireNonNull(userKey, "Client email must not be null");
 
-        // 3) Intentar devolver token cacheado si sigue vigente
-        CachedToken cached = tokenCache.get(userKey);
-        if (cached != null && !cached.isExpired(CLOCK_SKEW_SECONDS)) {
-            return cached.getToken();
-        }
-
-        // 4) Generar un nuevo token de forma segura (evitar carreras con compute)
-        // compute() es atómico por key; así evitamos generar 2 tokens a la vez para el mismo usuario
+        // 4) Resolve from cache or regenerate atomically if expired or does not exist
         CachedToken fresh = tokenCache.compute(userKey, (key, oldVal) -> {
-            // Si otro hilo ya lo regeneró y aún no expira, reutiliza
             if (oldVal != null && !oldVal.isExpired(CLOCK_SKEW_SECONDS)) {
                 return oldVal;
             }
-            try {
-                String newToken = jwtGenerator.generateToken(key, new String[] { "user" }, DEFAULT_TTL_SECONDS);
-                long exp = Instant.now().getEpochSecond() + DEFAULT_TTL_SECONDS;
-                return new CachedToken(newToken, exp);
-            } catch (Exception e) {
-                // Si falla, no dejes un valor corrupto en caché (compute no pone nada si retornas null)
-                throw new RuntimeException("Error generando token", e);
-            }
+            String newToken = generateJwtForUser(key);
+            Instant exp = Instant.now().plusSeconds(DEFAULT_TTL_SECONDS);
+            return new CachedToken(newToken, exp);
         });
 
-        return fresh.getToken();
+        return fresh.token();
     }
 
-    // ======== Operaciones opcionales sobre la caché ========
-
-    /** "Logout" educativo: invalida el token vigente en caché. */
-    public void logout(String username) {
-        if (username != null) {
-            tokenCache.remove(username);
-        }
-    }
-
-    /** Invalida el token cacheado cuando cambian credenciales/roles del usuario. */
+    /**
+     * Invalidates the cached token for the user.
+     */
     public void invalidateUserToken(String username) {
         if (username != null) {
             tokenCache.remove(username);
         }
     }
 
-    /** Limpia toda la caché (útil en tests o rotación de claves de firma). */
+    /** Alias for invalidation. */
+    public void logout(String username) {
+        invalidateUserToken(username);
+    }
+
+    /** Clears the entire cache. */
     public void clearAllTokens() {
         tokenCache.clear();
+    }
+
+    //   Implementation
+    /**
+     * Encapsulates JWT generation.
+     * In production, you could add here:
+     *  - dynamic role/permission claims
+     *  - jti for revocation
+     *  - issuer/audience/key versioning, etc.
+     */
+    private String generateJwtForUser(String userEmail) {
+        try {
+            return jwtGenerator.generateToken(userEmail, new String[] {"user"}, DEFAULT_TTL_SECONDS);
+        } catch (Exception e) {
+            throw new RuntimeException("Error generating token", e);
+        }
     }
 }

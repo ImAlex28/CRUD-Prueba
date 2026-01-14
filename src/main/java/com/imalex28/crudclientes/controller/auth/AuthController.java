@@ -19,12 +19,12 @@ public class AuthController {
     @Inject
     JwtGenerator jwtGenerator;
     
-
     @Inject
     AuthService authService;
 
 
     /**
+     * ENDPOINT to generate a JWT Token for user.
      * POST /auth/login
      * Body:
      * {
@@ -32,29 +32,29 @@ public class AuthController {
      *   "password": "1234"
      * }
      */
-
     @POST
     @Path("/login")
     public Response userLogin(CredentialsRequestDTO request) {
         try {
 
-            // Delegamos la verificación al servicio (H2 repo, hashing, etc.)
+            // Delegate verification to the service (H2 repo, hashing, etc.)
             String jwt = authService.loginAndIssueToken(request.getUsername(), request.getPassword());
             return Response.ok(new LoginResponseDTO(jwt)).build();
 
-            // Usuario básico con rol "user"
-            //String token = jwtGenerator.generateToken("alex28", new String[] { "user" }, 3600);
-            //return Response.ok(Map.of("token", token)).build();
         } catch (Exception e) {
             return Response.serverError().entity(Map.of("error", e.getMessage())).build();
         }
     }
 
+    /**
+     * ENDPOINT to generate a JWT Token with admin role. At this time, neither role or password validation is performed.
+     * Body is not required, it'll generate a default admin token. ENDPOINT just for testing, not final.
+     */
     @POST
     @Path("/admin/login")
     public Response adminLogin() {
         try {
-            // Admin con rol "admin"
+            // Admin with role "admin" generated directly invoking jwtGenerator
             String token = jwtGenerator.generateToken("alex28", new String[] { "admin" }, 3600);
             return Response.ok(Map.of("token", token)).build();
         } catch (Exception e) {

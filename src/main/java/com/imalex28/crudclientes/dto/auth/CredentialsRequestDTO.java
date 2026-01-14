@@ -33,5 +33,4 @@ public class CredentialsRequestDTO {
 	public CredentialsRequestDTO() {
 	}
 	
-	
 }

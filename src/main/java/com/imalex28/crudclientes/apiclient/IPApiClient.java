@@ -14,6 +14,13 @@ import jakarta.ws.rs.core.MediaType;
 @RegisterRestClient(configKey="ip-api")
 @Path("/lite")
 public interface IPApiClient {
+	
+	/**
+	 * GET to the external API for IP. Response is a JSON with IP data.
+	 * @param ip
+	 * @param token
+	 * @return ExternalIPDTO
+	 */
 	@GET
 	@Path("/{ip}")
 	@Produces(MediaType.APPLICATION_JSON)

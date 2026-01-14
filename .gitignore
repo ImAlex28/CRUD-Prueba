@@ -7,3 +7,9 @@ src/main/resources/application.properties
 # Logs
 *.log
 
+ExportPrivateKey.class
+ExportPrivateKey.java
+ExportPublicKey.class
+ExportPublicKey.java
+jwtkeystore.jks
+privateKey.pem
