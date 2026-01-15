@@ -46,7 +46,24 @@
 	  <artifactId>quarkus-rest-client-reactive-jackson</artifactId>
 	</dependency>
 
+	<!-- REDIS Client-->
+	<dependency>
+	  <groupId>io.quarkus</groupId>
+	  <artifactId>quarkus-redis-client</artifactId>
+	</dependency>
 	
+	<!-- JWT Bearer Token -->
+	<dependency>
+	    <groupId>io.quarkus</groupId>
+	    <artifactId>quarkus-smallrye-jwt</artifactId>
+	</dependency>
+
+    <!-- Firma de JWT con RS256 (Nimbus) -->
+    <dependency>
+      <groupId>com.nimbusds</groupId>
+      <artifactId>nimbus-jose-jwt</artifactId>
+    </dependency>
+
 	<!-- Junit5 -->
     <dependency>
       <groupId>io.quarkus</groupId>

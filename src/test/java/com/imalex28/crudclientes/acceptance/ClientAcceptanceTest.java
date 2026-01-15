@@ -1,3 +1,4 @@
+
 package com.imalex28.crudclientes.acceptance;
 
 import static io.restassured.RestAssured.given;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import com.imalex28.crudclientes.controller.ClienteController;
+import com.imalex28.crudclientes.controller.auth.JwtGenerator;
 import com.imalex28.crudclientes.model.Cliente;
 import com.imalex28.crudclientes.repository.ClienteRepository;
 
@@ -18,30 +20,40 @@ import io.quarkus.test.InjectMock;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
+import jakarta.inject.Inject;
 
 @QuarkusTest
 @TestHTTPEndpoint(ClienteController.class)
 public class ClientAcceptanceTest {
-	
 
-	@InjectMock
+    @InjectMock
     @jakarta.inject.Named("jpa")
     ClienteRepository clientRepository;
 
+    @Inject
+    JwtGenerator jwtGenerator;
+
+    private String userToken;
+
     @BeforeEach
-    void resetMocks() {
+    void setUp() throws Exception {
+        // Reset mocks for test independence.
         Mockito.reset(clientRepository);
-    } // This will eliminate all stubs (when... thenReturn...) before each test, so that they can be independent
+
+        // Generate a valid token for the user
+        userToken = jwtGenerator.generateToken("alex28", new String[] {"user"}, 3600);
+    }
 
     @Test
     void list_returns200_withItems() {
         var clientA = new Cliente(); clientA.setIdCliente(1L); clientA.setNombre("Alejandro"); clientA.setEmail("alejandro@example.com");
-        var clientB = new Cliente();clientB.setIdCliente(2L); clientB.setNombre("Maria"); clientB.setEmail("maria@example.com");
+        var clientB = new Cliente(); clientB.setIdCliente(2L); clientB.setNombre("Maria"); clientB.setEmail("maria@example.com");
 
         Mockito.when(clientRepository.findAll()).thenReturn(List.of(clientA, clientB));
 
         given()
             .accept(ContentType.JSON)
+            .header("Authorization", "Bearer " + userToken)
         .when()
             .get()
         .then()
@@ -61,21 +73,21 @@ public class ClientAcceptanceTest {
         existente.setNombre("Alejandro");
         existente.setEmail(email);
 
-        org.mockito.Mockito.when(clientRepository.findByEmail(email)).thenReturn(existente);
+        Mockito.when(clientRepository.findByEmail(email)).thenReturn(existente);
 
         var payload = """
             { "nombre": "Otro", "email": "alejandro@example.com" }
         """;
 
-        io.restassured.RestAssured.given()
-            .contentType(io.restassured.http.ContentType.JSON)
+        given()
+            .contentType(ContentType.JSON)
+            .header("Authorization", "Bearer " + userToken)
             .body(payload)
         .when()
             .post()
         .then()
             .statusCode(409)
-            .contentType(io.restassured.http.ContentType.JSON)
+            .contentType(ContentType.JSON)
             .body("message", org.hamcrest.Matchers.containsString("Ya existe un cliente con el email"));
     }
 }
-

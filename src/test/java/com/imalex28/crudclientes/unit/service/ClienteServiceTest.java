@@ -150,6 +150,32 @@ public class ClienteServiceTest {
 	    verify(clienteRepository, never()).delete(anyLong());
 	    verifyNoMoreInteractions(clienteRepository);
 	  }
+	  
+	  //
+    @Test
+    void normalizeEmail_shouldReturnLowercaseAndTrimmed() {
+        String input = "  TEST@Example.COM  ";
+        String result = service.normalizeEmail(input);
+        assertEquals("test@example.com", result);
+    }
 
+    @Test
+    void normalizeEmail_shouldReturnNull_whenInputIsNull() {
+        String result = service.normalizeEmail(null);
+        assertNull(result);
+    }
+
+    @Test
+    void normalizeEmail_shouldReturnEmptyString_whenInputIsSpacesOnly() {
+        String result = service.normalizeEmail("   ");
+        assertEquals("", result);
+    }
+
+    @Test
+    void normalizeEmail_shouldHandleAlreadyNormalizedEmail() {
+        String input = "user@example.com";
+        String result = service.normalizeEmail(input);
+        assertEquals("user@example.com", result);
+    }
 
 }

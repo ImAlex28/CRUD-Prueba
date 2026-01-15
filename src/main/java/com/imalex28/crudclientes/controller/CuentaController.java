@@ -14,6 +14,7 @@ import com.imalex28.crudclientes.model.Cuenta;
 import com.imalex28.crudclientes.service.ClienteService;
 import com.imalex28.crudclientes.service.CuentaService;
 
+import io.quarkus.security.Authenticated;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
@@ -29,6 +30,7 @@ import jakarta.ws.rs.core.Response;
 
 @ApplicationScoped
 @Path("/cuentas")
+@Authenticated
 public class CuentaController {
 	
 	@Inject

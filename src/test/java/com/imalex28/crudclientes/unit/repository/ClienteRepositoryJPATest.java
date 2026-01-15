@@ -128,5 +128,51 @@ public class ClienteRepositoryJPATest {
 	    assertTrue(repo.existsById(cli.getIdCliente()));
 	    assertFalse(repo.existsById(-1L));
 	  }
+	  
+	  // ---------- findByEmail -----------
+	  @Test
+	  @Transactional
+	  void findByEmail_devuelve_cliente(){
+		  Cliente client = nuevoCliente("Juan");
+		  client.setEmail("client@example.com");
+		  em.persist(client);
+		  em.flush();
+		  
+		  Cliente result = repo.findByEmail(client.getEmail());
+		  
+		  assertNotNull(result);
+		  assertEquals(result.getNombre(),client.getNombre());
+		  assertEquals(result.getEmail(),client.getEmail());
+	  }
+	  
+	  // ---------- findByEmail Not Found -----------
+	  @Test
+	  @Transactional
+	  void findByEmail_not_found(){
+		  Cliente client = nuevoCliente("Juan");
+		  client.setEmail("client@example.com");
+		  String email = "client2@example.com";
+		  em.persist(client);
+		  em.flush();
+		  
+		  Cliente result = repo.findByEmail(email);
+		  
+		  assertNull(result);
+	  }
+	  
+	// ---------- findByEmail Not Found -----------
+		  @Test
+		  @Transactional
+		  void findByEmail_null_email(){
+			  Cliente client = nuevoCliente("Juan");
+			  client.setEmail("client@example.com");
+			  String email = null;
+			  em.persist(client);
+			  em.flush();
+			  
+			  Cliente result = repo.findByEmail(email);
+			  
+			  assertNull(result);
+		  }
 
 }

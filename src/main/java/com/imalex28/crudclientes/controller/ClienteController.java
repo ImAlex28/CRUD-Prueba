@@ -21,10 +21,12 @@ import com.imalex28.crudclientes.model.Cuenta;
 import com.imalex28.crudclientes.service.ClienteService;
 import com.imalex28.crudclientes.service.CuentaService;
 
+import io.quarkus.security.Authenticated;
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
 @Path("/clientes")
+@Authenticated
 public class ClienteController {
 	
 	@Inject              
