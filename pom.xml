@@ -123,6 +123,11 @@
 	  <artifactId>rest-assured</artifactId>
 	  <scope>test</scope>
 	</dependency>
+	<!-- Quarkus Scheduler -->
+	<dependency>
+	    <groupId>io.quarkus</groupId>
+	    <artifactId>quarkus-scheduler</artifactId>
+	</dependency>
   </dependencies>
 
   <build>

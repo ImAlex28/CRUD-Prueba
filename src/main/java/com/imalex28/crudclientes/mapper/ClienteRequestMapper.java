@@ -13,5 +13,6 @@ public interface ClienteRequestMapper {
     @Mapping(source = "apellidos", target = "apellidos")
     @Mapping(source = "email", target = "email")
     @Mapping(target = "idCliente", ignore = true) // la entidad tiene id autogenerado
+    @Mapping(source = "registerDate", target = "registerDate")
     Cliente toCliente(ClienteRequestDTO dto);
 }

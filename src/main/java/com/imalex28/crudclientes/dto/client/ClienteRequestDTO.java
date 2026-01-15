@@ -1,5 +1,7 @@
 package com.imalex28.crudclientes.dto.client;
 
+import java.util.Date;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.annotation.Nonnull;
 
@@ -16,15 +18,20 @@ public class ClienteRequestDTO {
 	
 	@Nonnull
 	public String email;
+	
+	@Nonnull
+	public Date registerDate;
+
 
 	public ClienteRequestDTO() {
 	}
 
-	public ClienteRequestDTO(String nombre, String apellidos, String dni, String email) {
+	public ClienteRequestDTO(String nombre, String apellidos, String dni, String email, Date registerDate) {
 		this.nombre = nombre;
 		this.apellidos = apellidos;
 		this.dni = dni;
 		this.email = email;
+		this.registerDate = registerDate;
 	}
 
 	public String getNombre() {
@@ -57,6 +64,14 @@ public class ClienteRequestDTO {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public Date getRegisterDate() {
+		return registerDate;
+	}
+
+	public void setRegisterDate(Date registerDate) {
+		this.registerDate = registerDate;
 	}
 	
 }

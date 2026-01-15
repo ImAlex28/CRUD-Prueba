@@ -1,4 +1,5 @@
 package com.imalex28.crudclientes.repository;
+import java.util.Date;
 import java.util.List;
 
 import com.imalex28.crudclientes.model.Cliente;
@@ -11,5 +12,6 @@ public interface ClienteRepository {
     void delete(Long id);
     boolean existsById(Long idCliente);
     Cliente findByEmail(String email);
+	int deleteOlderThan(Date cutoff);
 }
 

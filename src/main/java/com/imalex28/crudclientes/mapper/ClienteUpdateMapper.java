@@ -14,6 +14,7 @@ public interface ClienteUpdateMapper {
     @Mapping(source = "nombre", target = "nombre")
     @Mapping(source = "apellidos", target = "apellidos")
     @Mapping(source = "email", target = "email")
+    @Mapping(source = "registerDate", target = "registerDate")
     Cliente toCliente(ClienteUpdateDTO dto);
 
 }

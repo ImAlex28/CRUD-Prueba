@@ -1,7 +1,7 @@
 -- Clientes
-INSERT INTO cliente (nombre, apellidos, dni, email) VALUES ('Juan', 'Pérez', '12345678A', 'juan@test.com');
-INSERT INTO cliente (nombre, apellidos, dni, email) VALUES ('María', 'García', '87654321B', 'maria@test.com');
-INSERT INTO cliente (nombre, apellidos, dni, email) VALUES ('Pedro', 'López', '11111111C', 'pedro@test.com');
+INSERT INTO cliente (nombre, apellidos, dni, email, register_date) VALUES ('Juan', 'Pérez', '12345678A', 'juan@test.com','2026-01-15');
+INSERT INTO cliente (nombre, apellidos, dni, email, register_date) VALUES ('María', 'García', '87654321B', 'maria@test.com','2026-01-12');
+INSERT INTO cliente (nombre, apellidos, dni, email, register_date) VALUES ('Pedro', 'López', '11111111C', 'pedro@test.com','2025-12-15');
 
 SHOW COLUMNS FROM cuenta;
 
