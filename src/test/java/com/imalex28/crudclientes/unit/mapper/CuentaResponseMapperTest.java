@@ -27,7 +27,7 @@ public class CuentaResponseMapperTest {
 
     Cuenta entity = new Cuenta();
     entity.setIdCuenta(1001L);
-    entity.setIdCliente(cliente); 
+    entity.setCliente(cliente); 
     entity.setNumeroCuenta("ES12 3456 7890 1234 5678 9012");
     entity.setTipoCuenta("AHORRO"); 
     entity.setSaldo(1234.56d); 
@@ -38,7 +38,7 @@ public class CuentaResponseMapperTest {
     // Assert
     assertNotNull(dto);
     assertEquals(1001L, dto.getIdCuenta());
-    assertEquals(entity.getIdCliente(), dto.getCliente()); // <- id del cliente
+    assertEquals(entity.getCliente(), dto.getCliente()); // <- id del cliente
     assertEquals("ES12 3456 7890 1234 5678 9012", dto.getNumeroCuenta());
     assertEquals("AHORRO", dto.getTipoCuenta());
     assertEquals(1234.56d, dto.getSaldo(), 0.0001d);
@@ -49,7 +49,7 @@ public class CuentaResponseMapperTest {
   void toCuentaResponseDTO_manejaNulos() {
     Cuenta entity = new Cuenta();
     entity.setIdCuenta(null);
-    entity.setIdCliente(null);
+    entity.setCliente(null);
     entity.setNumeroCuenta(null);
     entity.setTipoCuenta(null);
     // entity.setSaldo(...) 
@@ -80,14 +80,14 @@ public class CuentaResponseMapperTest {
 
     Cuenta a = new Cuenta();
     a.setIdCuenta(1L);
-    a.setIdCliente(c1);
+    a.setCliente(c1);
     a.setNumeroCuenta("ACC-001");
     a.setTipoCuenta("CORRIENTE");
     a.setSaldo(100.00d);
 
     Cuenta b = new Cuenta();
     b.setIdCuenta(2L);
-    b.setIdCliente(c2);
+    b.setCliente(c2);
     b.setNumeroCuenta("ACC-002");
     b.setTipoCuenta("AHORRO");
     b.setSaldo(250.50d);
@@ -98,13 +98,13 @@ public class CuentaResponseMapperTest {
     assertEquals(2, list.size());
 
     assertEquals(1L, list.get(0).getIdCuenta());
-    assertEquals(a.getIdCliente(), list.get(0).getCliente());
+    assertEquals(a.getCliente(), list.get(0).getCliente());
     assertEquals("ACC-001", list.get(0).getNumeroCuenta());
     assertEquals("CORRIENTE", list.get(0).getTipoCuenta());
     assertEquals(100.00d, list.get(0).getSaldo(), 0.0001d);
 
     assertEquals(2L, list.get(1).getIdCuenta());
-    assertEquals(b.getIdCliente(), list.get(1).getCliente());
+    assertEquals(b.getCliente(), list.get(1).getCliente());
     assertEquals("ACC-002", list.get(1).getNumeroCuenta());
     assertEquals("AHORRO", list.get(1).getTipoCuenta());
     assertEquals(250.50d, list.get(1).getSaldo(), 0.0001d);

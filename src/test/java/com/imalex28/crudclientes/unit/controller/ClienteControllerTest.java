@@ -134,8 +134,8 @@ public class ClienteControllerTest {
 	    @Test
 	    void findCuentasCliente_devuelveDTOCuentas() {
 	    	Cliente cliente = new Cliente(); cliente.setIdCliente(2L);
-	    	Cuenta c1 = new Cuenta(); c1.setIdCuenta(1L); c1.setIdCliente(cliente);
-	    	Cuenta c2 = new Cuenta(); c2.setIdCuenta(2L); c2.setIdCliente(cliente);
+	    	Cuenta c1 = new Cuenta(); c1.setIdCuenta(1L); c1.setCliente(cliente);
+	    	Cuenta c2 = new Cuenta(); c2.setIdCuenta(2L); c2.setCliente(cliente);
 	    	
 	    	when(cuentaService.findByIdCliente(cliente.getIdCliente())).thenReturn(List.of(c1,c2));
 	    	
@@ -165,8 +165,8 @@ public class ClienteControllerTest {
 	        Response resp = controller.saveCuenta(idPath,cuenta);
 	        
 
-	        assertNotNull(cuenta.getIdCliente(), "El controller debe asociar un Cliente en cuenta.idCliente");
-	        assertEquals(idPath, cuenta.getIdCliente().getIdCliente());
+	        assertNotNull(cuenta.getCliente(), "El controller debe asociar un Cliente en cuenta.idCliente");
+	        assertEquals(idPath, cuenta.getCliente().getIdCliente());
 
 
 	        assertNotNull(resp);

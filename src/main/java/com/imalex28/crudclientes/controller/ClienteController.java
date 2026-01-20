@@ -103,7 +103,7 @@ public class ClienteController {
 			cliente.setIdCliente(idCliente);
 				
 	        // Asociar solo el ID
-	        cuenta.setIdCliente(cliente);
+	        cuenta.setCliente(cliente);
 
 	        cuentaService.save(cuenta);
 

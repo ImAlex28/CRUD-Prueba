@@ -48,7 +48,7 @@ class CuentaRepositoryJPATest {
 
   private Cuenta nuevaCuenta(Cliente cliente, String num, String tipo, double saldo) {
     Cuenta cta = new Cuenta();
-    cta.setIdCliente(cliente);  
+    cta.setCliente(cliente);  
     cta.setNumeroCuenta(num);
     cta.setTipoCuenta(tipo);
     cta.setSaldo(saldo);
@@ -172,7 +172,7 @@ class CuentaRepositoryJPATest {
 
     List<Cuenta> cuentasCli1 = repo.findByIdCliente(cli1.getIdCliente());
     assertEquals(2, cuentasCli1.size());
-    assertTrue(cuentasCli1.stream().allMatch(c -> c.getIdCliente().getIdCliente().equals(cli1.getIdCliente())));
+    assertTrue(cuentasCli1.stream().allMatch(c -> c.getCliente().getIdCliente().equals(cli1.getIdCliente())));
 
     List<Cuenta> cuentasCli2 = repo.findByIdCliente(cli2.getIdCliente());
     assertEquals(1, cuentasCli2.size());

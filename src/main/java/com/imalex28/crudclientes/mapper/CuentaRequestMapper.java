@@ -14,7 +14,7 @@ import com.imalex28.crudclientes.service.ClienteService;
 @Mapper(componentModel = "cdi") 
 public interface CuentaRequestMapper {
     // Mapear DTO a Entidad
-    @Mapping(target = "idCliente", source = "idCliente", qualifiedByName = "idToCliente")
+    @Mapping(target = "cliente", source = "idCliente", qualifiedByName = "idToCliente")
     @Mapping(source = "numeroCuenta", target = "numeroCuenta")
     @Mapping(source = "tipoCuenta", target = "tipoCuenta")
     @Mapping(source = "saldo", target = "saldo")

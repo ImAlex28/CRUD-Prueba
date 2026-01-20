@@ -46,13 +46,13 @@ public class CuentaService {
 	
 
 	public void save(Cuenta cuenta) {
-        validarClienteExiste(cuenta.getIdCliente().getIdCliente());
+        validarClienteExiste(cuenta.getCliente().getIdCliente());
 		cuentaRepository.save(cuenta);
 	}
 	
 
     public void update(Cuenta cuenta) {
-        validarClienteExiste(cuenta.getIdCliente().getIdCliente());
+        validarClienteExiste(cuenta.getCliente().getIdCliente());
         validarCuentaExiste(cuenta.getIdCuenta());
     	cuentaRepository.update(cuenta);
     }

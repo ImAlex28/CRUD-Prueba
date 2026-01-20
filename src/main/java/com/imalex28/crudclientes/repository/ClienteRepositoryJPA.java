@@ -1,5 +1,6 @@
 package com.imalex28.crudclientes.repository;
 
+import java.util.Date;
 import java.util.List;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -48,6 +49,14 @@ public class ClienteRepositoryJPA implements ClienteRepository{
     }
     
     @Override
+	@Transactional
+	public int deleteOlderThan(Date cutoff) {
+	    return em.createQuery("DELETE FROM Cliente c WHERE c.registerDate < :cutoff")
+	             .setParameter("cutoff", cutoff)
+	             .executeUpdate();
+	}
+    
+    @Override
     public boolean existsById(Long idCliente) {
         return !em.createQuery(
                 "SELECT 1 FROM Cliente c WHERE c.idCliente = :id")
@@ -70,8 +79,6 @@ public class ClienteRepositoryJPA implements ClienteRepository{
             return null;
         }
     }
-
-
 }
 
 

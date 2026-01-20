@@ -53,9 +53,9 @@ public class CuentaUpdateMapperTest {
     assertEquals(1234.56d, entity.getSaldo(), 0.0001d);
 
     // Asociación ManyToOne resuelta con el Cliente del servicio
-    assertNotNull(entity.getIdCliente());
-    assertEquals(2002L, entity.getIdCliente().getIdCliente());
-    assertEquals("Alejandro", entity.getIdCliente().getNombre());
+    assertNotNull(entity.getCliente());
+    assertEquals(2002L, entity.getCliente().getIdCliente());
+    assertEquals("Alejandro", entity.getCliente().getNombre());
   }
 
   @Test
@@ -79,7 +79,7 @@ public class CuentaUpdateMapperTest {
     assertEquals("ACC-NULL", entityNullId.getNumeroCuenta());
     assertEquals("CORRIENTE", entityNullId.getTipoCuenta());
     assertEquals(0.0d, entityNullId.getSaldo(), 0.0001d);
-    assertNull(entityNullId.getIdCliente(), "Con idCliente null, la asociación debe ser null");
+    assertNull(entityNullId.getCliente(), "Con idCliente null, la asociación debe ser null");
 
     // Arrange: idCliente con valor pero el servicio no encuentra al cliente
     CuentaUpdateDTO dtoNotFound = new CuentaUpdateDTO();
@@ -100,7 +100,7 @@ public class CuentaUpdateMapperTest {
     assertEquals("ACC-404", entityNotFound.getNumeroCuenta());
     assertEquals("AHORRO", entityNotFound.getTipoCuenta());
     assertEquals(50.0d, entityNotFound.getSaldo(), 0.0001d);
-    assertNull(entityNotFound.getIdCliente(), "Si el servicio no retorna cliente, la asociación debe ser null");
+    assertNull(entityNotFound.getCliente(), "Si el servicio no retorna cliente, la asociación debe ser null");
   }
 
   @Test
@@ -122,7 +122,7 @@ public class CuentaUpdateMapperTest {
     assertNull(entity.getIdCuenta());
     assertNull(entity.getNumeroCuenta());
     assertNull(entity.getTipoCuenta());
-    assertNull(entity.getIdCliente());
+    assertNull(entity.getCliente());
 
     assertEquals(0.0d, entity.getSaldo(), 0.0001d);
 
