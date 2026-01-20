@@ -79,7 +79,7 @@ public class CuentaServiceTest {
 	    // Arrange
 	    Cliente cliente = new Cliente(); cliente.setIdCliente(123L);
 	    Cuenta cuenta = new Cuenta();
-	    cuenta.setIdCliente(cliente);
+	    cuenta.setCliente(cliente);
 	    cuenta.setNumeroCuenta("ES12 3456 7890 1234 5678 9012");
 	    cuenta.setTipoCuenta("AHORRO");
 	    cuenta.setSaldo(1500.75);
@@ -100,7 +100,7 @@ public class CuentaServiceTest {
 	  @Test
 	  void save_clienteNoExiste_lanzaIAE_yNoGuarda() {
 	    Cliente cliente = new Cliente(); cliente.setIdCliente(999L);
-	    Cuenta cuenta = new Cuenta(); cuenta.setIdCliente(cliente);
+	    Cuenta cuenta = new Cuenta(); cuenta.setCliente(cliente);
 
 	    when(clienteRepository.existsById(999L)).thenReturn(false);
 	    
@@ -119,7 +119,7 @@ public class CuentaServiceTest {
 	  @Test
 	  void update_ok_validaClienteYCuenta_Actualiza() {
 		Cliente cliente = new Cliente(); cliente.setIdCliente(5L);
-		Cuenta cuenta = new Cuenta(); cuenta.setIdCliente(cliente); cuenta.setIdCuenta(7L);
+		Cuenta cuenta = new Cuenta(); cuenta.setCliente(cliente); cuenta.setIdCuenta(7L);
 		  
 		when(clienteRepository.existsById(5L)).thenReturn(true);
 		when(cuentaRepository.existsById(7L)).thenReturn(true);
@@ -138,7 +138,7 @@ public class CuentaServiceTest {
 	  @Test
 	  void update_clienteNoExiste() {
 		Cliente cliente = new Cliente(); cliente.setIdCliente(999L);
-		Cuenta cuenta = new Cuenta(); cuenta.setIdCliente(cliente); cuenta.setIdCuenta(7L);
+		Cuenta cuenta = new Cuenta(); cuenta.setCliente(cliente); cuenta.setIdCuenta(7L);
 		  
 	    when(clienteRepository.existsById(999L)).thenReturn(false);
 	
@@ -157,7 +157,7 @@ public class CuentaServiceTest {
 	  @Test
 	  void update_clienteExiste_CuentaNoExiste() {
 		Cliente cliente = new Cliente(); cliente.setIdCliente(5L);
-		Cuenta cuenta = new Cuenta(); cuenta.setIdCliente(cliente); cuenta.setIdCuenta(999L);
+		Cuenta cuenta = new Cuenta(); cuenta.setCliente(cliente); cuenta.setIdCuenta(999L);
 		  
 	    when(clienteRepository.existsById(5L)).thenReturn(true);
 	    when(cuentaRepository.existsById(999L)).thenReturn(false);

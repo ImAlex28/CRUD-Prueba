@@ -63,9 +63,9 @@ public class CuentaRequestMapperTest {
 		    assertNull(entity.getIdCuenta(), "idCuenta debe permanecer null (autogenerado)");
 
 		    // Assert: ManyToOne resuelto correctamente
-		    assertNotNull(entity.getIdCliente());
-		    assertEquals(123L, entity.getIdCliente().getIdCliente());
-		    assertEquals("Alejandro", entity.getIdCliente().getNombre());
+		    assertNotNull(entity.getCliente());
+		    assertEquals(123L, entity.getCliente().getIdCliente());
+		    assertEquals("Alejandro", entity.getCliente().getNombre());
 
 		    // Verifica la interacción con el servicio
 		    verify(clienteService, times(1)).findById(123L);

@@ -17,7 +17,7 @@ public interface CuentaUpdateMapper {
 	
 
     @Mapping(target = "idCuenta", source = "idCuenta") 
-    @Mapping(target = "idCliente", source = "idCliente", qualifiedByName = "idToCliente")
+    @Mapping(target = "cliente", source = "idCliente", qualifiedByName = "idToCliente")
     @Mapping(source = "numeroCuenta", target = "numeroCuenta")
     @Mapping(source = "tipoCuenta", target = "tipoCuenta")
     @Mapping(source = "saldo", target = "saldo")

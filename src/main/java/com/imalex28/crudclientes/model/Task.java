@@ -12,7 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 
 @Entity
-@Table(name = "ONBOARDING_TASK")
+@Table(name = "TASK")
 public class Task {
 	
 	  @Id
