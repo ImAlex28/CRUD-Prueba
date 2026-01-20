@@ -20,7 +20,7 @@ import lombok.Builder;
 
 @Entity
 @Table(
-    name = "cliente",
+    name = "client",
     uniqueConstraints = {
         @UniqueConstraint(columnNames = {"email"})
     }
@@ -29,15 +29,15 @@ import lombok.Builder;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Cliente {
+public class Client {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_cliente")
-    private Long idCliente;
+    @Column(name = "client_id")
+    private Long clientId;
 
-    private String nombre;
-    private String apellidos;
+    private String name;
+    private String surname;
     private String dni;
 
     @Column(name = "register_date")

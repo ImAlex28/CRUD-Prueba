@@ -13,9 +13,8 @@ import org.mockito.Mockito;
 
 import com.imalex28.crudclientes.controller.ClienteController;
 import com.imalex28.crudclientes.controller.auth.JwtGenerator;
-import com.imalex28.crudclientes.model.Cliente;
-import com.imalex28.crudclientes.repository.ClienteRepository;
-
+import com.imalex28.crudclientes.model.Client;
+import com.imalex28.crudclientes.repository.ClientRepository;
 import io.quarkus.test.InjectMock;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
@@ -28,7 +27,7 @@ public class ClientAcceptanceTest {
 
     @InjectMock
     @jakarta.inject.Named("jpa")
-    ClienteRepository clientRepository;
+    ClientRepository clientRepository;
 
     @Inject
     JwtGenerator jwtGenerator;
@@ -46,8 +45,8 @@ public class ClientAcceptanceTest {
 
     @Test
     void list_returns200_withItems() {
-        var clientA = new Cliente(); clientA.setIdCliente(1L); clientA.setNombre("Alejandro"); clientA.setEmail("alejandro@example.com");
-        var clientB = new Cliente(); clientB.setIdCliente(2L); clientB.setNombre("Maria"); clientB.setEmail("maria@example.com");
+        var clientA = new Client(); clientA.setClientId(1L); clientA.setName("Alejandro"); clientA.setEmail("alejandro@example.com");
+        var clientB = new Client(); clientB.setClientId(2L); clientB.setName("Maria"); clientB.setEmail("maria@example.com");
 
         Mockito.when(clientRepository.findAll()).thenReturn(List.of(clientA, clientB));
 
@@ -68,9 +67,9 @@ public class ClientAcceptanceTest {
     @Test
     void create_returns409_whenEmailAlreadyExists() {
         var email = "alejandro@example.com";
-        var existente = new Cliente();
-        existente.setIdCliente(1L);
-        existente.setNombre("Alejandro");
+        var existente = new Client();
+        existente.setClientId(1L);
+        existente.setName("Alejandro");
         existente.setEmail(email);
 
         Mockito.when(clientRepository.findByEmail(email)).thenReturn(existente);

@@ -21,35 +21,34 @@ import com.imalex28.crudclientes.dto.account.CuentaResponseDTO;
 import com.imalex28.crudclientes.dto.client.ClienteRequestDTO;
 import com.imalex28.crudclientes.dto.client.ClienteResponseDTO;
 import com.imalex28.crudclientes.dto.client.ClienteUpdateDTO;
-import com.imalex28.crudclientes.mapper.ClienteRequestMapper;
-import com.imalex28.crudclientes.mapper.ClienteResponseMapper;
-import com.imalex28.crudclientes.mapper.ClienteUpdateMapper;
-import com.imalex28.crudclientes.mapper.CuentaRequestMapper;
-import com.imalex28.crudclientes.mapper.CuentaResponseMapper;
-import com.imalex28.crudclientes.model.Cliente;
-import com.imalex28.crudclientes.model.Cuenta;
-import com.imalex28.crudclientes.service.ClienteService;
-import com.imalex28.crudclientes.service.CuentaService;
-
+import com.imalex28.crudclientes.mapper.BankAccountRequestMapper;
+import com.imalex28.crudclientes.mapper.BankAccountResponseMapper;
+import com.imalex28.crudclientes.mapper.ClientRequestMapper;
+import com.imalex28.crudclientes.mapper.ClientResponseMapper;
+import com.imalex28.crudclientes.mapper.ClientUpdateMapper;
+import com.imalex28.crudclientes.model.BankAccount;
+import com.imalex28.crudclientes.model.Client;
+import com.imalex28.crudclientes.service.BankAccountService;
+import com.imalex28.crudclientes.service.ClientService;
 import jakarta.ws.rs.core.Response;
 
 @ExtendWith(MockitoExtension.class)
 public class ClienteControllerTest {
-	    @Mock CuentaService cuentaService;
-	    @Mock ClienteService clienteService;
-	    @Mock CuentaRequestMapper cuentaRequestMapper;
-	    @Mock CuentaResponseMapper cuentaResponseMapper;
-	    @Mock ClienteUpdateMapper clienteUpdateMapper;
-	    @Mock ClienteRequestMapper clienteRequestMapper;
-	    @Mock ClienteResponseMapper clienteResponseMapper;
+	    @Mock BankAccountService cuentaService;
+	    @Mock ClientService clienteService;
+	    @Mock BankAccountRequestMapper cuentaRequestMapper;
+	    @Mock BankAccountResponseMapper cuentaResponseMapper;
+	    @Mock ClientUpdateMapper clienteUpdateMapper;
+	    @Mock ClientRequestMapper clienteRequestMapper;
+	    @Mock ClientResponseMapper clienteResponseMapper;
 
 	    @InjectMocks
 	    ClienteController controller;
 
 	    @Test
 	    void listAll_devuelve_lista_dtos() {
-	        Cliente c1 = new Cliente(); c1.setIdCliente(1L);
-	        Cliente c2 = new Cliente(); c2.setIdCliente(2L);
+	        Client c1 = new Client(); c1.setClientId(1L);
+	        Client c2 = new Client(); c2.setClientId(2L);
 	        when(clienteService.findAll()).thenReturn(List.of(c1, c2));
 
 	        ClienteResponseDTO dto1 = new ClienteResponseDTO(); dto1.setId(1L);
@@ -70,7 +69,7 @@ public class ClienteControllerTest {
 	   @Test
 	    void findById_mapea_corretamente() {
 	        Long id = 99L;
-	        Cliente cliente = new Cliente(); cliente.setIdCliente(id);
+	        Client cliente = new Client(); cliente.setClientId(id);
 	        when(clienteService.findById(id)).thenReturn(cliente);
 
 	        ClienteResponseDTO dto = new ClienteResponseDTO(); dto.setId(id);
@@ -96,8 +95,8 @@ public class ClienteControllerTest {
 	   @Test
 	    void create_usa_mapper_y_service_devuelve_201() {
 		    ClienteRequestDTO req = new ClienteRequestDTO();
-		    Cliente cliente = new Cliente();
-		    cliente.setIdCliente(123L);
+		    Client cliente = new Client();
+		    cliente.setClientId(123L);
 	        when(clienteRequestMapper.toCliente(req)).thenReturn(cliente);
 
 	        Response resp = controller.create(req);
@@ -111,7 +110,7 @@ public class ClienteControllerTest {
 	   @Test
 	    void update_usa_mapper_y_service_devuelve_200() {
 	        ClienteUpdateDTO req = new ClienteUpdateDTO();
-	        Cliente cliente = new Cliente();
+	        Client cliente = new Client();
 	        when(clienteUpdateMapper.toCliente(req)).thenReturn(cliente);
 
 	        Response resp = controller.update(req);
@@ -133,26 +132,26 @@ public class ClienteControllerTest {
 	    
 	    @Test
 	    void findCuentasCliente_devuelveDTOCuentas() {
-	    	Cliente cliente = new Cliente(); cliente.setIdCliente(2L);
-	    	Cuenta c1 = new Cuenta(); c1.setIdCuenta(1L); c1.setCliente(cliente);
-	    	Cuenta c2 = new Cuenta(); c2.setIdCuenta(2L); c2.setCliente(cliente);
+	    	Client cliente = new Client(); cliente.setClientId(2L);
+	    	BankAccount c1 = new BankAccount(); c1.setBankAccountId(1L); c1.setClient(cliente);
+	    	BankAccount c2 = new BankAccount(); c2.setBankAccountId(2L); c2.setClient(cliente);
 	    	
-	    	when(cuentaService.findByIdCliente(cliente.getIdCliente())).thenReturn(List.of(c1,c2));
+	    	when(cuentaService.findByIdCliente(cliente.getClientId())).thenReturn(List.of(c1,c2));
 	    	
 	    	CuentaResponseDTO dto1 = new CuentaResponseDTO(); dto1.setCliente(cliente);dto1.setIdCuenta(1L);
 	    	CuentaResponseDTO dto2 = new CuentaResponseDTO(); dto2.setCliente(cliente);dto2.setIdCuenta(2L);
 	    	
 	    	when(cuentaResponseMapper.toCuentaResponseDTOList(List.of(c1,c2))).thenReturn(List.of(dto1,dto2));
 	    	
-	    	List<CuentaResponseDTO> resp = controller.findCuentasCliente(cliente.getIdCliente());
+	    	List<CuentaResponseDTO> resp = controller.findCuentasCliente(cliente.getClientId());
 	    	
 	    	assertNotNull(resp);
 	    	assertEquals(2,resp.size());
 	    	assertEquals(1L,resp.get(0).getIdCuenta());
-	    	assertEquals(2L,resp.get(0).getCliente().getIdCliente());
+	    	assertEquals(2L,resp.get(0).getCliente().getClientId());
 	    	assertEquals(2L,resp.get(1).getIdCuenta());
-	    	assertEquals(2L,resp.get(1).getCliente().getIdCliente());
-	    	verify(cuentaService).findByIdCliente(cliente.getIdCliente());
+	    	assertEquals(2L,resp.get(1).getCliente().getClientId());
+	    	verify(cuentaService).findByIdCliente(cliente.getClientId());
 	    	verify(cuentaResponseMapper).toCuentaResponseDTOList(List.of(c1,c2));
 	    		
 	    }
@@ -160,13 +159,13 @@ public class ClienteControllerTest {
 	    @Test
 	    void saveCuenta_invocaService_devuelve201_y_cuenta() {
 	        Long idPath = 1L;
-	    	Cuenta cuenta = new Cuenta(); cuenta.setIdCuenta(10L);
+	        BankAccount cuenta = new BankAccount(); cuenta.setBankAccountId(10L);
 	    	
 	        Response resp = controller.saveCuenta(idPath,cuenta);
 	        
 
-	        assertNotNull(cuenta.getCliente(), "El controller debe asociar un Cliente en cuenta.idCliente");
-	        assertEquals(idPath, cuenta.getCliente().getIdCliente());
+	        assertNotNull(cuenta.getClient(), "El controller debe asociar un Cliente en cuenta.idCliente");
+	        assertEquals(idPath, cuenta.getClient().getClientId());
 
 
 	        assertNotNull(resp);

@@ -17,28 +17,28 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 
 @Entity
-@Table(name = "cuenta")
+@Table(name = "account")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Cuenta {
+public class BankAccount {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_cuenta")
-    private Long idCuenta;
+    private Long bankAccountId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_cliente", nullable = false)
-    private Cliente cliente;
+    private Client client;
 
     @Column(name = "numero_cuenta", unique = true, nullable = false)
-    private String numeroCuenta;
+    private String accountNumber;
 
     @Column(name = "tipo_cuenta", nullable = false)
-    private String tipoCuenta;
+    private String accountType;
 
     @Column(nullable = false)
-    private double saldo;
+    private double balance;
 }

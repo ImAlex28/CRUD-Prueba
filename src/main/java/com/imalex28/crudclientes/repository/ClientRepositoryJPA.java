@@ -10,48 +10,48 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
-import com.imalex28.crudclientes.model.Cliente;
+import com.imalex28.crudclientes.model.Client;
 
 @ApplicationScoped
 @Named("jpa")
-public class ClienteRepositoryJPA implements ClienteRepository{
+public class ClientRepositoryJPA implements ClientRepository{
 	
 	@PersistenceContext
 	EntityManager em;
 	
 	@Override
-	public List<Cliente> findAll(){
-		return em.createQuery("SELECT c FROM Cliente c", Cliente.class).getResultList();
+	public List<Client> findAll(){
+		return em.createQuery("SELECT c FROM Client c", Client.class).getResultList();
 	}
 	
 	@Override
-	public Cliente findById(Long id) {
-		return em.find(Cliente.class, id);
+	public Client findById(Long id) {
+		return em.find(Client.class, id);
 	}
 	
 	@Override
 	@Transactional
-	public void save(Cliente cliente) {
+	public void save(Client cliente) {
 		em.persist(cliente);
 	}
 	
     @Override
     @Transactional
-    public void update(Cliente cliente) {
+    public void update(Client cliente) {
         em.merge(cliente);
     }
     
     @Override
     @Transactional
     public void delete(Long id) {
-        Cliente cliente = em.find(Cliente.class, id);
+        Client cliente = em.find(Client.class, id);
         em.remove(cliente);
     }
     
     @Override
 	@Transactional
 	public int deleteOlderThan(Date cutoff) {
-	    return em.createQuery("DELETE FROM Cliente c WHERE c.registerDate < :cutoff")
+	    return em.createQuery("DELETE FROM Client c WHERE c.registerDate < :cutoff")
 	             .setParameter("cutoff", cutoff)
 	             .executeUpdate();
 	}
@@ -59,7 +59,7 @@ public class ClienteRepositoryJPA implements ClienteRepository{
     @Override
     public boolean existsById(Long idCliente) {
         return !em.createQuery(
-                "SELECT 1 FROM Cliente c WHERE c.idCliente = :id")
+                "SELECT 1 FROM Client c WHERE c.clientId = :id")
             .setParameter("id", idCliente)
             .setMaxResults(1)
             .getResultList()
@@ -67,11 +67,11 @@ public class ClienteRepositoryJPA implements ClienteRepository{
     }
     
     @Override
-    public Cliente findByEmail(String email) {
+    public Client findByEmail(String email) {
         try {
             return em.createQuery(
-                    "SELECT c FROM Cliente c WHERE LOWER(c.email) = :email",
-                    Cliente.class
+                    "SELECT c FROM Client c WHERE LOWER(c.email) = :email",
+                    Client.class
                 )
                 .setParameter("email", email == null ? null : email.toLowerCase())
                 .getSingleResult();

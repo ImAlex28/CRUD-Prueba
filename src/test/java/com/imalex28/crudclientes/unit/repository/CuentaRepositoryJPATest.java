@@ -8,9 +8,9 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.imalex28.crudclientes.model.Cliente;
-import com.imalex28.crudclientes.model.Cuenta;
-import com.imalex28.crudclientes.repository.CuentaRepositoryJPA;
+import com.imalex28.crudclientes.model.Client;
+import com.imalex28.crudclientes.model.BankAccount;
+import com.imalex28.crudclientes.repository.BankAccountRepositoryJPA;
 
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
@@ -21,7 +21,7 @@ import jakarta.transaction.Transactional;
 class CuentaRepositoryJPATest {
 	
   @Inject	
-  CuentaRepositoryJPA repo;
+  BankAccountRepositoryJPA repo;
 
   @Inject
   EntityManager em;
@@ -31,27 +31,27 @@ class CuentaRepositoryJPATest {
   @Transactional
   void setUp() throws Exception {
     // limpiar datos
-    em.createQuery("DELETE FROM Cuenta").executeUpdate();
-    em.createQuery("DELETE FROM Cliente").executeUpdate();
+    em.createQuery("DELETE FROM BankAccount").executeUpdate();
+    em.createQuery("DELETE FROM Client").executeUpdate();
   }
 
 
 
   // Utilidades para crear datos de prueba
-  private Cliente nuevoCliente(String nombre) {
-    Cliente c = new Cliente();   
-    c.setNombre(nombre);
-    c.setApellidos("Test");
+  private Client nuevoCliente(String nombre) {
+    Client c = new Client();   
+    c.setName(nombre);
+    c.setSurname("Test");
     c.setEmail(nombre.toLowerCase() + "@test.local");
     return c;
   }
 
-  private Cuenta nuevaCuenta(Cliente cliente, String num, String tipo, double saldo) {
-    Cuenta cta = new Cuenta();
-    cta.setCliente(cliente);  
-    cta.setNumeroCuenta(num);
-    cta.setTipoCuenta(tipo);
-    cta.setSaldo(saldo);
+  private BankAccount nuevaCuenta(Client cliente, String num, String tipo, double saldo) {
+	BankAccount cta = new BankAccount();
+    cta.setClient(cliente);  
+    cta.setAccountNumber(num);
+    cta.setAccountType(tipo);
+    cta.setBalance(saldo);
     return cta;
   }
 
@@ -59,7 +59,7 @@ class CuentaRepositoryJPATest {
   @Test
   @Transactional
   void findAll_devuelveTodasLasCuentas() {
-    Cliente cli = nuevoCliente("Alex");
+    Client cli = nuevoCliente("Alex");
     em.persist(cli);
 
     em.persist(nuevaCuenta(cli,"ES00-101", "AHORRO", 100.0));
@@ -67,7 +67,7 @@ class CuentaRepositoryJPATest {
 
     em.flush();
 
-    List<Cuenta> cuentas = repo.findAll();
+    List<BankAccount> cuentas = repo.findAll();
     assertEquals(2, cuentas.size());
   }
 
@@ -75,53 +75,53 @@ class CuentaRepositoryJPATest {
   @Test
   @Transactional
   void findById_devuelveLaCuenta() {
-    Cliente cli = nuevoCliente("Bea");
+    Client cli = nuevoCliente("Bea");
     em.persist(cli);
 
-    Cuenta c = nuevaCuenta(cli,"ES00-201", "AHORRO", 50.0);
+    BankAccount c = nuevaCuenta(cli,"ES00-201", "AHORRO", 50.0);
     em.persist(c);
     em.flush();  
 
-    Cuenta encontrada = repo.findById(c.getIdCuenta());
+    BankAccount encontrada = repo.findById(c.getBankAccountId());
     assertNotNull(encontrada);
-    assertEquals("ES00-201", encontrada.getNumeroCuenta());
-    assertEquals("AHORRO", encontrada.getTipoCuenta());
-    assertEquals(50.0, encontrada.getSaldo());
+    assertEquals("ES00-201", encontrada.getAccountNumber());
+    assertEquals("AHORRO", encontrada.getAccountType());
+    assertEquals(50.0, encontrada.getBalance());
   }
 
   // ---------- save ----------
   @Test
   @Transactional
   void save_persisteNuevaCuenta() {
-    Cliente cli = nuevoCliente("Carlos");
+    Client cli = nuevoCliente("Carlos");
     em.persist(cli);
 
-    Cuenta nueva = nuevaCuenta(cli,"ES00-301", "CORRIENTE", 300.0);
+    BankAccount nueva = nuevaCuenta(cli,"ES00-301", "CORRIENTE", 300.0);
     // si id autogenerado, deja id en null
-    nueva.setIdCuenta(null);
+    nueva.setBankAccountId(null);
 
     repo.save(nueva);
     em.flush();
 
     // Busca por número (o por id) para verificar
-    List<Cuenta> all = repo.findAll();
-    assertTrue(all.stream().anyMatch(c -> "ES00-301".equals(c.getNumeroCuenta())));
+    List<BankAccount> all = repo.findAll();
+    assertTrue(all.stream().anyMatch(c -> "ES00-301".equals(c.getAccountNumber())));
   }
 
   // ---------- update ----------
   @Test
   @Transactional
   void update_merge_actualizaCampos() {
-    Cliente cli = nuevoCliente("Dani");
+    Client cli = nuevoCliente("Dani");
     em.persist(cli);
 
-    Cuenta c = nuevaCuenta(cli, "ES00-401", "AHORRO", 400.0);
+    BankAccount c = nuevaCuenta(cli, "ES00-401", "AHORRO", 400.0);
     em.persist(c);
     em.flush();
 
     // Cambiar saldo y tipo
-    c.setSaldo(450.0);
-    c.setTipoCuenta("PLAZO FIJO");
+    c.setBalance(450.0);
+    c.setAccountType("PLAZO FIJO");
 
     repo.update(c);  // usa merge
 
@@ -129,30 +129,30 @@ class CuentaRepositoryJPATest {
     em.clear();
 
     // Releer para confirmar cambios
-    Cuenta reloaded = repo.findById(c.getIdCuenta());
-    assertEquals(450.0, reloaded.getSaldo());
-    assertEquals("PLAZO FIJO", reloaded.getTipoCuenta());
+    BankAccount reloaded = repo.findById(c.getBankAccountId());
+    assertEquals(450.0, reloaded.getBalance());
+    assertEquals("PLAZO FIJO", reloaded.getAccountType());
   }
 
   // ---------- delete ----------
   @Test
   @Transactional
   void delete_eliminaPorId() {
-    Cliente cli = nuevoCliente("Eva");
+    Client cli = nuevoCliente("Eva");
     em.persist(cli);
 
-    Cuenta c = nuevaCuenta(cli, "ES00-501", "AHORRO", 500.0);
+    BankAccount c = nuevaCuenta(cli, "ES00-501", "AHORRO", 500.0);
     em.persist(c);
     em.flush();
 
-    Long id = c.getIdCuenta();
+    Long id = c.getBankAccountId();
     assertNotNull(id);
 
     repo.delete(id);
     em.flush();
     em.clear();
 
-    Cuenta borrada = repo.findById(id);
+    BankAccount borrada = repo.findById(id);
     assertNull(borrada); // em.find devuelve null si no existe
   }
 
@@ -160,8 +160,8 @@ class CuentaRepositoryJPATest {
   @Test
   @Transactional
   void findByIdCliente_filtraPorCliente() {
-    Cliente cli1 = nuevoCliente("Fede");
-    Cliente cli2 = nuevoCliente("Gina");
+    Client cli1 = nuevoCliente("Fede");
+    Client cli2 = nuevoCliente("Gina");
     em.persist(cli1);
     em.persist(cli2);
 
@@ -170,20 +170,20 @@ class CuentaRepositoryJPATest {
     em.persist(nuevaCuenta(cli2, "ES00-701", "AHORRO", 30.0));
     em.flush();
 
-    List<Cuenta> cuentasCli1 = repo.findByIdCliente(cli1.getIdCliente());
+    List<BankAccount> cuentasCli1 = repo.findByIdCliente(cli1.getClientId());
     assertEquals(2, cuentasCli1.size());
-    assertTrue(cuentasCli1.stream().allMatch(c -> c.getCliente().getIdCliente().equals(cli1.getIdCliente())));
+    assertTrue(cuentasCli1.stream().allMatch(c -> c.getClient().getClientId().equals(cli1.getClientId())));
 
-    List<Cuenta> cuentasCli2 = repo.findByIdCliente(cli2.getIdCliente());
+    List<BankAccount> cuentasCli2 = repo.findByIdCliente(cli2.getClientId());
     assertEquals(1, cuentasCli2.size());
-    assertEquals("ES00-701", cuentasCli2.get(0).getNumeroCuenta());
+    assertEquals("ES00-701", cuentasCli2.get(0).getAccountNumber());
   }
 
   // ---------- getSaldoTotalByCliente ----------
   @Test
   @Transactional
   void getSaldoTotalByCliente_sumaSaldos_oDevuelveCeroSiNoHayCuentas() {
-    Cliente cli = nuevoCliente("Hugo");
+    Client cli = nuevoCliente("Hugo");
     em.persist(cli);
 
     // Caso con cuentas
@@ -191,15 +191,15 @@ class CuentaRepositoryJPATest {
     em.persist(nuevaCuenta(cli, "ES00-802", "AHORRO", 150.0));
     em.flush();
 
-    Double total = repo.getSaldoTotalByCliente(cli.getIdCliente());
+    Double total = repo.getSaldoTotalByCliente(cli.getClientId());
     assertEquals(250.0, total);
 
     // Caso sin cuentas: SUM(...) devuelve null -> método debe retornar 0.0
-    Cliente cli2 = nuevoCliente("Iris");
+    Client cli2 = nuevoCliente("Iris");
     em.persist(cli2);
     em.flush();
 
-    Double totalVacio = repo.getSaldoTotalByCliente(cli2.getIdCliente());
+    Double totalVacio = repo.getSaldoTotalByCliente(cli2.getClientId());
     assertEquals(0.0, totalVacio);
   }
 
@@ -207,14 +207,14 @@ class CuentaRepositoryJPATest {
   @Test
   @Transactional
   void existsById_trueSiExiste_falseSiNo() {
-    Cliente cli = nuevoCliente("Juan");
+    Client cli = nuevoCliente("Juan");
     em.persist(cli);
 
-    Cuenta c = nuevaCuenta(cli, "ES00-1001", "AHORRO", 1.0);
+    BankAccount c = nuevaCuenta(cli, "ES00-1001", "AHORRO", 1.0);
     em.persist(c);
     em.flush();
 
-    assertTrue(repo.existsById(c.getIdCuenta()));
+    assertTrue(repo.existsById(c.getBankAccountId()));
     assertFalse(repo.existsById(-1L));
   }
 }

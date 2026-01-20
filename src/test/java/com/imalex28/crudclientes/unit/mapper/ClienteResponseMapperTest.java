@@ -11,20 +11,20 @@ import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
 import com.imalex28.crudclientes.dto.client.ClienteResponseDTO;
-import com.imalex28.crudclientes.mapper.ClienteResponseMapper;
-import com.imalex28.crudclientes.model.Cliente;
+import com.imalex28.crudclientes.mapper.ClientResponseMapper;
+import com.imalex28.crudclientes.model.Client;
 
 public class ClienteResponseMapperTest {
 	  // Instanciamos el mapper
-	  private final ClienteResponseMapper mapper = Mappers.getMapper(ClienteResponseMapper.class);
+	  private final ClientResponseMapper mapper = Mappers.getMapper(ClientResponseMapper.class);
 
 	  @Test
 	  void toClienteResponseDTO_mapeaTodosLosCampos() {
 	    // Arrange
-	    Cliente entity = new Cliente();
-	    entity.setIdCliente((long) 123);
-	    entity.setNombre("Alejandro");
-	    entity.setApellidos("Fernandez");
+	    Client entity = new Client();
+	    entity.setClientId((long) 123);
+	    entity.setName("Alejandro");
+	    entity.setSurname("Fernandez");
 	    entity.setEmail("alejandro@example.com");
 	    entity.setDni("49875412T");
 
@@ -33,8 +33,8 @@ public class ClienteResponseMapperTest {
 
 	    // Assert
 	    assertNotNull(entity);
-	    assertEquals(dto.getNombre(), entity.getNombre());
-	    assertEquals(dto.getApellidos(), entity.getApellidos());
+	    assertEquals(dto.getNombre(), entity.getName());
+	    assertEquals(dto.getApellidos(), entity.getSurname());
 	    assertEquals(dto.getEmail(), entity.getEmail());
 	    assertEquals(dto.getDni(), entity.getDni());
 
@@ -43,7 +43,7 @@ public class ClienteResponseMapperTest {
 
 	  @Test
 	  void toClienteResponseDTO_manejaNulo() {
-	    Cliente entity = null;
+	    Client entity = null;
 	
 	    ClienteResponseDTO dto = mapper.toClienteResponseDTO(entity);
 	
@@ -53,8 +53,8 @@ public class ClienteResponseMapperTest {
 
 	  @Test
 	  void toClienteResponseDTOList_mapeaColeccion() {
-	    Cliente a = new Cliente(); a.setIdCliente(1L); a.setNombre("A"); a.setApellidos("Uno"); a.setEmail("a@correo.es");
-	    Cliente b = new Cliente(); b.setIdCliente(2L); b.setNombre("B"); b.setApellidos("Dos"); b.setEmail("b@correo.es");
+	    Client a = new Client(); a.setClientId(1L); a.setName("A"); a.setSurname("Uno"); a.setEmail("a@correo.es");
+	    Client b = new Client(); b.setClientId(2L); b.setName("B"); b.setSurname("Dos"); b.setEmail("b@correo.es");
 	
 	    List<ClienteResponseDTO> list = mapper.toClienteResponseDTOList(List.of(a, b));
 	

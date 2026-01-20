@@ -5,14 +5,14 @@ import com.imalex28.crudclientes.controller.CuentaController;
 import com.imalex28.crudclientes.dto.account.CuentaRequestDTO;
 import com.imalex28.crudclientes.dto.account.CuentaResponseDTO;
 import com.imalex28.crudclientes.dto.account.CuentaUpdateDTO;
-import com.imalex28.crudclientes.mapper.ClienteRequestMapper;
-import com.imalex28.crudclientes.mapper.ClienteResponseMapper;
-import com.imalex28.crudclientes.mapper.CuentaRequestMapper;
-import com.imalex28.crudclientes.mapper.CuentaResponseMapper;
-import com.imalex28.crudclientes.mapper.CuentaUpdateMapper;
-import com.imalex28.crudclientes.model.Cuenta;
-import com.imalex28.crudclientes.service.ClienteService;
-import com.imalex28.crudclientes.service.CuentaService;
+import com.imalex28.crudclientes.mapper.BankAccountRequestMapper;
+import com.imalex28.crudclientes.mapper.BankAccountResponseMapper;
+import com.imalex28.crudclientes.mapper.BankAccountUpdateMapper;
+import com.imalex28.crudclientes.mapper.ClientRequestMapper;
+import com.imalex28.crudclientes.mapper.ClientResponseMapper;
+import com.imalex28.crudclientes.model.BankAccount;
+import com.imalex28.crudclientes.service.BankAccountService;
+import com.imalex28.crudclientes.service.ClientService;
 import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,21 +28,21 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 class CuentaControllerUnitTest {
 
-    @Mock CuentaService cuentaService;
-    @Mock ClienteService clienteService;
-    @Mock CuentaRequestMapper cuentaRequestMapper;
-    @Mock CuentaResponseMapper cuentaResponseMapper;
-    @Mock CuentaUpdateMapper cuentaUpdateMapper;
-    @Mock ClienteRequestMapper clienteRequestMapper;
-    @Mock ClienteResponseMapper clienteResponseMapper;
+    @Mock BankAccountService cuentaService;
+    @Mock ClientService clienteService;
+    @Mock BankAccountRequestMapper cuentaRequestMapper;
+    @Mock BankAccountResponseMapper cuentaResponseMapper;
+    @Mock BankAccountUpdateMapper cuentaUpdateMapper;
+    @Mock ClientRequestMapper clienteRequestMapper;
+    @Mock ClientResponseMapper clienteResponseMapper;
 
     @InjectMocks
     CuentaController controller;
 
     @Test
     void listAll_devuelve_lista_dtos() {
-        Cuenta c1 = new Cuenta(); c1.setIdCuenta(1L);
-        Cuenta c2 = new Cuenta(); c2.setIdCuenta(2L);
+    	BankAccount c1 = new BankAccount(); c1.setBankAccountId(1L);
+    	BankAccount c2 = new BankAccount(); c2.setBankAccountId(2L);
         when(cuentaService.findAll()).thenReturn(List.of(c1, c2));
 
         CuentaResponseDTO dto1 = new CuentaResponseDTO(); dto1.setIdCuenta(1L);
@@ -63,7 +63,7 @@ class CuentaControllerUnitTest {
     @Test
     void findById_mapea_corretamente() {
         Long id = 99L;
-        Cuenta cuenta = new Cuenta(); cuenta.setIdCuenta(id);
+        BankAccount cuenta = new BankAccount(); cuenta.setBankAccountId(id);
         when(cuentaService.findById(id)).thenReturn(cuenta);
 
         CuentaResponseDTO dto = new CuentaResponseDTO(); dto.setIdCuenta(id);
@@ -89,7 +89,7 @@ class CuentaControllerUnitTest {
     @Test
     void create_usa_mapper_y_service_devuelve_201() {
         CuentaRequestDTO req = new CuentaRequestDTO();
-        Cuenta cuenta = new Cuenta();
+        BankAccount cuenta = new BankAccount();
         when(cuentaRequestMapper.toCuenta(req, clienteService)).thenReturn(cuenta);
 
         Response resp = controller.create(req);
@@ -103,7 +103,7 @@ class CuentaControllerUnitTest {
     @Test
     void update_usa_mapper_y_service_devuelve_200() {
         CuentaUpdateDTO req = new CuentaUpdateDTO();
-        Cuenta cuenta = new Cuenta();
+        BankAccount cuenta = new BankAccount();
         Mockito.when(cuentaUpdateMapper.toCuenta(req, clienteService)).thenReturn(cuenta);
 
         Response resp = controller.update(req);

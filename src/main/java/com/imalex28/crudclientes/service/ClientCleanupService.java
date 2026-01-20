@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 
 import com.imalex28.crudclientes.model.Task;
-import com.imalex28.crudclientes.repository.ClienteRepository;
+import com.imalex28.crudclientes.repository.ClientRepository;
 import com.imalex28.crudclientes.repository.TaskRepository;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -16,7 +16,7 @@ public class ClientCleanupService {
 	
 	@Inject
 	@Named("jpa")
-	ClienteRepository clientRepository;
+	ClientRepository clientRepository;
 	
 	@Inject
 	@Named("jpa-task")

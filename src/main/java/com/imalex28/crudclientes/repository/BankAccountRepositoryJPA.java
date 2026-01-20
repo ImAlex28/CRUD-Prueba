@@ -8,59 +8,59 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
-import com.imalex28.crudclientes.model.Cuenta;
+import com.imalex28.crudclientes.model.BankAccount;
 
 @ApplicationScoped
 @Named("jpa-cuenta")
-public class CuentaRepositoryJPA implements CuentaRepository{
+public class BankAccountRepositoryJPA implements BankAccountRepository{
 	
 	@PersistenceContext
 	EntityManager em;
 	
 	@Override
-	public List<Cuenta> findAll(){
-		return em.createQuery("SELECT c FROM Cuenta c", Cuenta.class).getResultList();
+	public List<BankAccount> findAll(){
+		return em.createQuery("SELECT c FROM BankAccount c", BankAccount.class).getResultList();
 	}
 	
 	@Override
-	public Cuenta findById(Long id) {
-		return em.find(Cuenta.class, id);
+	public BankAccount findById(Long id) {
+		return em.find(BankAccount.class, id);
 	}
 	
 	@Override
 	@Transactional
-	public void save(Cuenta cuenta) {
+	public void save(BankAccount cuenta) {
 		em.persist(cuenta);
 	}
 	
     @Override
     @Transactional
-    public void update(Cuenta cuenta) {
+    public void update(BankAccount cuenta) {
         em.merge(cuenta);
     }
     
     @Override
     @Transactional
     public void delete(Long id) {
-    	Cuenta cuenta = em.find(Cuenta.class, id);
+    	BankAccount cuenta = em.find(BankAccount.class, id);
         em.remove(cuenta);
     }
 
 	@Override
-	public List<Cuenta> findByIdCliente(Long idCliente) {
-		return em.createQuery("SELECT c FROM Cuenta c WHERE c.cliente.idCliente = :idCliente", Cuenta.class).setParameter("idCliente", idCliente).getResultList();
+	public List<BankAccount> findByIdCliente(Long idCliente) {
+		return em.createQuery("SELECT c FROM BankAccount c WHERE c.client.clientId = :idCliente", BankAccount.class).setParameter("idCliente", idCliente).getResultList();
 	}
 
 	@Override
 	public Double getSaldoTotalByCliente(Long idCliente) {
-		Double total = em.createQuery("SELECT SUM(c.saldo) FROM Cuenta c WHERE c.cliente.idCliente = :idCliente", Double.class).setParameter("idCliente", idCliente).getSingleResult();
+		Double total = em.createQuery("SELECT SUM(c.balance) FROM BankAccount c WHERE c.client.clientId = :idCliente", Double.class).setParameter("idCliente", idCliente).getSingleResult();
 	    return total != null ? total : 0.0;
 	}
 	
 	@Override
 	public boolean existsById(Long idCuenta) {
 	    return em.createQuery(
-	            "SELECT COUNT(c) > 0 FROM Cuenta c WHERE c.idCuenta = :id",
+	            "SELECT COUNT(c) > 0 FROM BankAccount c WHERE c.bankAccountId = :id",
 	            Boolean.class)
 	        .setParameter("id", idCuenta)
 	        .getSingleResult();

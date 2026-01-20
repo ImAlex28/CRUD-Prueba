@@ -3,8 +3,8 @@ package com.imalex28.crudclientes.service;
 import java.util.List;
 
 import com.imalex28.crudclientes.dto.ErrorResponseDTO;
-import com.imalex28.crudclientes.model.Cliente;
-import com.imalex28.crudclientes.repository.ClienteRepository;
+import com.imalex28.crudclientes.model.Client;
+import com.imalex28.crudclientes.repository.ClientRepository;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -15,19 +15,19 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 @ApplicationScoped
-public class ClienteService {
+public class ClientService {
 
     @Inject
     @Named("jpa")
-    ClienteRepository clienteRepository;
+    ClientRepository clienteRepository;
 
-    public List<Cliente> findAll() {
+    public List<Client> findAll() {
     	// Llamamos al servicio de la capa Repositorio
         return clienteRepository.findAll();
     }
 
-    public Cliente findById(Long id) {
-        Cliente cliente = clienteRepository.findById(id);
+    public Client findById(Long id) {
+        Client cliente = clienteRepository.findById(id);
         if (cliente == null) {
         	// Si el cliente no se encuentra
             throw new NotFoundException("Cliente con ID " + id + " no encontrado");
@@ -35,7 +35,7 @@ public class ClienteService {
         return cliente;
     }
 
-    public void save(Cliente cliente) {
+    public void save(Client cliente) {
 
         String emailNorm = normalizeEmail(cliente.getEmail());
 
@@ -44,7 +44,7 @@ public class ClienteService {
 
 
         // Check de unicidad
-             Cliente existente = clienteRepository.findByEmail(emailNorm);
+             Client existente = clienteRepository.findByEmail(emailNorm);
 				if (existente != null) {
 				        throw new WebApplicationException(
 				            Response.status(Response.Status.CONFLICT)
@@ -59,18 +59,18 @@ public class ClienteService {
 
     }
 
-    public void update(Cliente cliente) {
-        Cliente existente = clienteRepository.findById(cliente.getIdCliente());
+    public void update(Client cliente) {
+        Client existente = clienteRepository.findById(cliente.getClientId());
         if (existente == null) {
         	// Si el cliente no existe:
-            throw new NotFoundException("Cliente con ID " + cliente.getIdCliente() + " no encontrado");
+            throw new NotFoundException("Cliente con ID " + cliente.getClientId() + " no encontrado");
         }
         
         clienteRepository.update(cliente);
     }
 
     public void delete(Long id) {
-        Cliente existente = clienteRepository.findById(id);
+        Client existente = clienteRepository.findById(id);
         if (existente == null) {
         	// Si el cliente no existe:
             throw new NotFoundException("Cliente con ID " + id + " no encontrado");

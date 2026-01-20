@@ -1,8 +1,8 @@
 
 package com.imalex28.crudclientes.service.auth;
 
-import com.imalex28.crudclientes.model.Cliente;
-import com.imalex28.crudclientes.repository.ClienteRepository;
+import com.imalex28.crudclientes.model.Client;
+import com.imalex28.crudclientes.repository.ClientRepository;
 import com.imalex28.crudclientes.controller.auth.JwtGenerator;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -25,7 +25,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Inject
     @Named("jpa")
-    ClienteRepository clientRepository;
+    ClientRepository clientRepository;
 
     @Inject
     JwtGenerator jwtGenerator;
@@ -66,7 +66,7 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public String loginAndIssueToken(String username, String password) throws InvalidCredentialsException {
         // 1) Find user
-        Cliente client = clientRepository.findByEmail(username);
+        Client client = clientRepository.findByEmail(username);
         if (client == null) {
             throw new InvalidCredentialsException();
         }

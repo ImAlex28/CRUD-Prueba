@@ -5,15 +5,14 @@ import java.util.List;
 import com.imalex28.crudclientes.dto.account.CuentaRequestDTO;
 import com.imalex28.crudclientes.dto.account.CuentaResponseDTO;
 import com.imalex28.crudclientes.dto.account.CuentaUpdateDTO;
-import com.imalex28.crudclientes.mapper.ClienteRequestMapper;
-import com.imalex28.crudclientes.mapper.ClienteResponseMapper;
-import com.imalex28.crudclientes.mapper.CuentaUpdateMapper;
-import com.imalex28.crudclientes.mapper.CuentaRequestMapper;
-import com.imalex28.crudclientes.mapper.CuentaResponseMapper;
-import com.imalex28.crudclientes.model.Cuenta;
-import com.imalex28.crudclientes.service.ClienteService;
-import com.imalex28.crudclientes.service.CuentaService;
-
+import com.imalex28.crudclientes.mapper.BankAccountRequestMapper;
+import com.imalex28.crudclientes.mapper.BankAccountResponseMapper;
+import com.imalex28.crudclientes.mapper.BankAccountUpdateMapper;
+import com.imalex28.crudclientes.mapper.ClientRequestMapper;
+import com.imalex28.crudclientes.mapper.ClientResponseMapper;
+import com.imalex28.crudclientes.model.BankAccount;
+import com.imalex28.crudclientes.service.BankAccountService;
+import com.imalex28.crudclientes.service.ClientService;
 import io.quarkus.security.Authenticated;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -34,27 +33,27 @@ import jakarta.ws.rs.core.Response;
 public class CuentaController {
 	
 	@Inject
-	CuentaService cuentaService;
+	BankAccountService cuentaService;
 	
 	@Inject
-	ClienteService clienteService;
+	ClientService clienteService;
 	
 	@Inject
-	ClienteRequestMapper clienteRequestMapper;
+	ClientRequestMapper clienteRequestMapper;
 	@Inject
-	ClienteResponseMapper clienteResponseMapper;
+	ClientResponseMapper clienteResponseMapper;
 	
 	@Inject
-	CuentaRequestMapper cuentaRequestMapper;
+	BankAccountRequestMapper cuentaRequestMapper;
 	@Inject
-	CuentaResponseMapper cuentaResponseMapper;
+	BankAccountResponseMapper cuentaResponseMapper;
 	@Inject
-	CuentaUpdateMapper cuentaPutMapper;
+	BankAccountUpdateMapper cuentaPutMapper;
 	
 	@GET //GET /cuentas
 	@Produces(MediaType.APPLICATION_JSON)  // Devuelve un JSON
 	public List<CuentaResponseDTO> listAll() {
-		List<Cuenta> cuentas = cuentaService.findAll();
+		List<BankAccount> cuentas = cuentaService.findAll();
 	    return cuentaResponseMapper.toCuentaResponseDTOList(cuentas);
 	}
 	
@@ -62,14 +61,14 @@ public class CuentaController {
 	@Path("/{id}") 
 	@Produces(MediaType.APPLICATION_JSON)
 	public CuentaResponseDTO findById(@PathParam("id") Long id) {
-		Cuenta cuenta = cuentaService.findById(id);
+		BankAccount cuenta = cuentaService.findById(id);
 		return cuentaResponseMapper.toCuentaResponseDTO(cuenta);
 	}
 	
 	@POST //POST /cuentas
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response create(CuentaRequestDTO cuentaDTO) {
-		Cuenta cuenta = cuentaRequestMapper.toCuenta(cuentaDTO, clienteService);
+		BankAccount cuenta = cuentaRequestMapper.toCuenta(cuentaDTO, clienteService);
 		cuentaService.save(cuenta);
 	    return Response.status(201).build();  // 201 = Created
 	}
@@ -78,7 +77,7 @@ public class CuentaController {
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response update(CuentaUpdateDTO cuentaDTO) {
-		Cuenta cuenta = cuentaPutMapper.toCuenta(cuentaDTO, clienteService);
+		BankAccount cuenta = cuentaPutMapper.toCuenta(cuentaDTO, clienteService);
 		cuentaService.update(cuenta);
 	    return Response.ok().build();  // 200 OK
 	}

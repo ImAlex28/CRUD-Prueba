@@ -13,8 +13,8 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.imalex28.crudclientes.model.Cliente;
-import com.imalex28.crudclientes.repository.ClienteRepositoryJPA;
+import com.imalex28.crudclientes.model.Client;
+import com.imalex28.crudclientes.repository.ClientRepositoryJPA;
 
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
@@ -25,7 +25,7 @@ import jakarta.transaction.Transactional;
 public class ClienteRepositoryJPATest {
 	
 	  @Inject	
-	  ClienteRepositoryJPA repo;
+	  ClientRepositoryJPA repo;
 
 	  @Inject
 	  EntityManager em;
@@ -34,23 +34,23 @@ public class ClienteRepositoryJPATest {
 	  @Transactional
 	  void setUp() throws Exception {
 	    // limpiar datos
-	    em.createQuery("DELETE FROM Cuenta").executeUpdate();
-	    em.createQuery("DELETE FROM Cliente").executeUpdate();
+	    em.createQuery("DELETE FROM BankAccount").executeUpdate();
+	    em.createQuery("DELETE FROM Client").executeUpdate();
 	  }
 	  
 	  // Utilidades para crear datos de prueba
-	  private Cliente nuevoCliente(String nombre) {
-	    Cliente c = new Cliente();   
-	    c.setNombre(nombre);
-	    c.setApellidos("Test");
+	  private Client nuevoCliente(String nombre) {
+	    Client c = new Client();   
+	    c.setName(nombre);
+	    c.setSurname("Test");
 	    c.setEmail(nombre.toLowerCase() + "@test.local");
 	    return c;
 	  }
 	  
-	  private Cliente nuevoCliente(String nombre, Date of) {
-		    Cliente c = new Cliente();   
-		    c.setNombre(nombre);
-		    c.setApellidos("Test");
+	  private Client nuevoCliente(String nombre, Date of) {
+		    Client c = new Client();   
+		    c.setName(nombre);
+		    c.setSurname("Test");
 		    c.setEmail(nombre.toLowerCase() + "@test.local");
 		    c.setRegisterDate(of);
 		    return c;
@@ -60,14 +60,14 @@ public class ClienteRepositoryJPATest {
 	  @Test
 	  @Transactional
 	  void findAll_devuelveTodosLosClientes() {
-	    Cliente c1 = nuevoCliente("Alex");
-	    Cliente c2 = nuevoCliente("Jesús");
+	    Client c1 = nuevoCliente("Alex");
+	    Client c2 = nuevoCliente("Jesús");
 	    em.persist(c1);
 	    em.persist(c2);
 
 	    em.flush();
 
-	    List<Cliente> clientes = repo.findAll();
+	    List<Client> clientes = repo.findAll();
 	    assertEquals(2, clientes.size());
 	  }
 	  
@@ -75,25 +75,25 @@ public class ClienteRepositoryJPATest {
 	  @Test
 	  @Transactional
 	  void findById_devuelveCliente() {
-	    Cliente c1 = nuevoCliente("Alex");
+	    Client c1 = nuevoCliente("Alex");
 	    em.persist(c1);
 
 	    em.flush();
 
-	    Cliente cliente = repo.findById(c1.getIdCliente());
+	    Client cliente = repo.findById(c1.getClientId());
 	    assertNotNull(cliente);
-	    assertEquals(c1.getIdCliente(), cliente.getIdCliente());
+	    assertEquals(c1.getClientId(), cliente.getClientId());
 	    assertEquals(c1,cliente);
 	  }
 	  
 	  @Test
 	  @Transactional
 	  void save_guardaCliente() {
-		  Cliente c1 = nuevoCliente("Alex");
+		  Client c1 = nuevoCliente("Alex");
   
 		  repo.save(c1);
 		  
-		  Cliente resultado = repo.findById(c1.getIdCliente());
+		  Client resultado = repo.findById(c1.getClientId());
 		  assertNotNull(resultado);
 		  assertEquals(c1,resultado);
 	  }
@@ -101,29 +101,29 @@ public class ClienteRepositoryJPATest {
 	  @Test
 	  @Transactional
 	  void update_actualizaCliente() {
-		  Cliente c1 = nuevoCliente("Alex");
+		  Client c1 = nuevoCliente("Alex");
   
 		  em.persist(c1);
 		  
-		  c1.setNombre("AlexUpdated");
+		  c1.setName("AlexUpdated");
 		  repo.update(c1);
 		  
-		  Cliente resultado = repo.findById(c1.getIdCliente());
+		  Client resultado = repo.findById(c1.getClientId());
 		  assertNotNull(resultado);
-		  assertEquals("AlexUpdated",resultado.getNombre());
-		  assertEquals(c1.getIdCliente(),resultado.getIdCliente());
+		  assertEquals("AlexUpdated",resultado.getName());
+		  assertEquals(c1.getClientId(),resultado.getClientId());
 	  }
 	  
 	  @Test
 	  @Transactional
 	  void delete_borraCliente() {
-		  Cliente c1 = nuevoCliente("Alex");
+		  Client c1 = nuevoCliente("Alex");
   
 		  em.persist(c1);
 		  
-		  repo.delete(c1.getIdCliente());
+		  repo.delete(c1.getClientId());
 		  
-		  Cliente resultado = repo.findById(c1.getIdCliente());
+		  Client resultado = repo.findById(c1.getClientId());
 		  assertNull(resultado);
 	  }
 	  
@@ -131,12 +131,12 @@ public class ClienteRepositoryJPATest {
 	  @Test
 	  @Transactional
 	  void existsById_trueSiExiste_falseSiNo() {
-	    Cliente cli = nuevoCliente("Juan");
+	    Client cli = nuevoCliente("Juan");
 	    em.persist(cli);
 
 	    em.flush();
 
-	    assertTrue(repo.existsById(cli.getIdCliente()));
+	    assertTrue(repo.existsById(cli.getClientId()));
 	    assertFalse(repo.existsById(-1L));
 	  }
 	  
@@ -144,15 +144,15 @@ public class ClienteRepositoryJPATest {
 	  @Test
 	  @Transactional
 	  void findByEmail_devuelve_cliente(){
-		  Cliente client = nuevoCliente("Juan");
+		  Client client = nuevoCliente("Juan");
 		  client.setEmail("client@example.com");
 		  em.persist(client);
 		  em.flush();
 		  
-		  Cliente result = repo.findByEmail(client.getEmail());
+		  Client result = repo.findByEmail(client.getEmail());
 		  
 		  assertNotNull(result);
-		  assertEquals(result.getNombre(),client.getNombre());
+		  assertEquals(result.getName(),client.getName());
 		  assertEquals(result.getEmail(),client.getEmail());
 	  }
 	  
@@ -160,13 +160,13 @@ public class ClienteRepositoryJPATest {
 	  @Test
 	  @Transactional
 	  void findByEmail_not_found(){
-		  Cliente client = nuevoCliente("Juan");
+		  Client client = nuevoCliente("Juan");
 		  client.setEmail("client@example.com");
 		  String email = "client2@example.com";
 		  em.persist(client);
 		  em.flush();
 		  
-		  Cliente result = repo.findByEmail(email);
+		  Client result = repo.findByEmail(email);
 		  
 		  assertNull(result);
 	  }
@@ -175,13 +175,13 @@ public class ClienteRepositoryJPATest {
 		  @Test
 		  @Transactional
 		  void findByEmail_null_email(){
-			  Cliente client = nuevoCliente("Juan");
+			  Client client = nuevoCliente("Juan");
 			  client.setEmail("client@example.com");
 			  String email = null;
 			  em.persist(client);
 			  em.flush();
 			  
-			  Cliente result = repo.findByEmail(email);
+			  Client result = repo.findByEmail(email);
 			  
 			  assertNull(result);
 		  }
@@ -192,9 +192,9 @@ public class ClienteRepositoryJPATest {
 		  @Transactional
 		  void deleteOlderThan_borraEstrictamenteMenoresQueCutoff() {
 		    // Datos: 2023-01-01, 2024-01-01, 2025-01-01
-		    Cliente c1 = nuevoCliente("c1", Date.valueOf(LocalDate.of(2023, 1, 1)));
-		    Cliente c2 = nuevoCliente("c2", Date.valueOf(LocalDate.of(2024, 1, 1)));
-		    Cliente c3 = nuevoCliente("c3", Date.valueOf(LocalDate.of(2025, 1, 1)));
+		    Client c1 = nuevoCliente("c1", Date.valueOf(LocalDate.of(2023, 1, 1)));
+		    Client c2 = nuevoCliente("c2", Date.valueOf(LocalDate.of(2024, 1, 1)));
+		    Client c3 = nuevoCliente("c3", Date.valueOf(LocalDate.of(2025, 1, 1)));
 
 		    em.persist(c1);
 		    em.persist(c2);
@@ -209,11 +209,11 @@ public class ClienteRepositoryJPATest {
 		    // Verifica borrados
 		    assertEquals(2, deleted, "Deben borrarse exactamente 2 registros anteriores al cutoff");
 
-		    Long remaining = em.createQuery("SELECT COUNT(c) FROM Cliente c", Long.class)
+		    Long remaining = em.createQuery("SELECT COUNT(c) FROM Client c", Long.class)
 		                       .getSingleResult();
 		    assertEquals(1L, remaining, "Debe quedar exactamente 1 registro");
 
-		    Cliente survivor = em.createQuery("SELECT c FROM Cliente c", Cliente.class)
+		    Client survivor = em.createQuery("SELECT c FROM Client c", Client.class)
 		                         .getSingleResult();
 		    assertNotNull(survivor);
 
@@ -225,8 +225,8 @@ public class ClienteRepositoryJPATest {
 		  @Test
 		  @Transactional
 		  void deleteOlderThan_noBorraIgualesAlCutoff() {
-		    Cliente c1 = nuevoCliente("c1", Date.valueOf(LocalDate.of(2024, 6, 1))); // igual a cutoff
-		    Cliente c2 = nuevoCliente("c2", Date.valueOf(LocalDate.of(2024, 6, 2))); // mayor
+		    Client c1 = nuevoCliente("c1", Date.valueOf(LocalDate.of(2024, 6, 1))); // igual a cutoff
+		    Client c2 = nuevoCliente("c2", Date.valueOf(LocalDate.of(2024, 6, 2))); // mayor
 
 		    em.persist(c1);
 		    em.persist(c2);
@@ -239,7 +239,7 @@ public class ClienteRepositoryJPATest {
 
 		    assertEquals(0, deleted, "No debe borrar registros con fecha igual al cutoff ni superiores");
 
-		    Long remaining = em.createQuery("SELECT COUNT(c) FROM Cliente c", Long.class)
+		    Long remaining = em.createQuery("SELECT COUNT(c) FROM Client c", Long.class)
 		                       .getSingleResult();
 		    assertEquals(2L, remaining, "Deben permanecer 2 registros");
 		  }
@@ -248,8 +248,8 @@ public class ClienteRepositoryJPATest {
 		  @Test
 		  @Transactional
 		  void deleteOlderThan_sinBorrados_siTodosSonPosteriores() {
-		    Cliente c1 = nuevoCliente("c1", Date.valueOf(LocalDate.of(2025, 1, 1)));
-		    Cliente c2 = nuevoCliente("c2", Date.valueOf(LocalDate.of(2025, 2, 1)));
+		    Client c1 = nuevoCliente("c1", Date.valueOf(LocalDate.of(2025, 1, 1)));
+		    Client c2 = nuevoCliente("c2", Date.valueOf(LocalDate.of(2025, 2, 1)));
 
 		    em.persist(c1);
 		    em.persist(c2);
@@ -262,7 +262,7 @@ public class ClienteRepositoryJPATest {
 
 		    assertEquals(0, deleted, "No debe borrar ningún registro (todos posteriores al cutoff)");
 
-		    Long remaining = em.createQuery("SELECT COUNT(c) FROM Cliente c", Long.class)
+		    Long remaining = em.createQuery("SELECT COUNT(c) FROM Client c", Long.class)
 		                       .getSingleResult();
 		    assertEquals(2L, remaining);
 		  }

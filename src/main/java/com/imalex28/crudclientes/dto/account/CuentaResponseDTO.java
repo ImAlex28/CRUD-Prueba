@@ -1,7 +1,7 @@
 package com.imalex28.crudclientes.dto.account;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.imalex28.crudclientes.model.Cliente;
+import com.imalex28.crudclientes.model.Client;
 
 import jakarta.annotation.Nonnull;
 
@@ -11,7 +11,7 @@ public class CuentaResponseDTO {
     private Long idCuenta;
     
 	@Nonnull
-    private Cliente cliente;
+    private Client cliente;
 	
 	@Nonnull
     private String numeroCuenta;
@@ -25,7 +25,7 @@ public class CuentaResponseDTO {
 	public CuentaResponseDTO() {
 	}
 
-	public CuentaResponseDTO(Long idCuenta, Cliente cliente, String numeroCuenta, String tipoCuenta, double saldo) {
+	public CuentaResponseDTO(Long idCuenta, Client cliente, String numeroCuenta, String tipoCuenta, double saldo) {
 		this.idCuenta = idCuenta;
 		this.cliente = cliente;
 		this.numeroCuenta = numeroCuenta;
@@ -41,11 +41,11 @@ public class CuentaResponseDTO {
 		this.idCuenta = idCuenta;
 	}
 
-	public Cliente getCliente() {
+	public Client getCliente() {
 		return cliente;
 	}
 
-	public void setCliente(Cliente cliente) {
+	public void setCliente(Client cliente) {
 		this.cliente = cliente;
 	}
 

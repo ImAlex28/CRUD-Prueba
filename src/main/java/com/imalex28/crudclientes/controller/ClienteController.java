@@ -12,15 +12,14 @@ import com.imalex28.crudclientes.dto.account.CuentaResponseDTO;
 import com.imalex28.crudclientes.dto.client.ClienteRequestDTO;
 import com.imalex28.crudclientes.dto.client.ClienteResponseDTO;
 import com.imalex28.crudclientes.dto.client.ClienteUpdateDTO;
-import com.imalex28.crudclientes.mapper.ClienteRequestMapper;
-import com.imalex28.crudclientes.mapper.ClienteResponseMapper;
-import com.imalex28.crudclientes.mapper.ClienteUpdateMapper;
-import com.imalex28.crudclientes.mapper.CuentaResponseMapper;
-import com.imalex28.crudclientes.model.Cliente;
-import com.imalex28.crudclientes.model.Cuenta;
-import com.imalex28.crudclientes.service.ClienteService;
-import com.imalex28.crudclientes.service.CuentaService;
-
+import com.imalex28.crudclientes.mapper.BankAccountResponseMapper;
+import com.imalex28.crudclientes.mapper.ClientRequestMapper;
+import com.imalex28.crudclientes.mapper.ClientResponseMapper;
+import com.imalex28.crudclientes.mapper.ClientUpdateMapper;
+import com.imalex28.crudclientes.model.BankAccount;
+import com.imalex28.crudclientes.model.Client;
+import com.imalex28.crudclientes.service.BankAccountService;
+import com.imalex28.crudclientes.service.ClientService;
 import io.quarkus.security.Authenticated;
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -30,22 +29,22 @@ import jakarta.enterprise.context.ApplicationScoped;
 public class ClienteController {
 	
 	@Inject              
-    ClienteService clienteService; 
+    ClientService clienteService; 
 	@Inject
-	CuentaService cuentaService;
+	BankAccountService cuentaService;
 	@Inject
-	ClienteRequestMapper clienteRequestMapper;
+	ClientRequestMapper clienteRequestMapper;
 	@Inject
-	ClienteResponseMapper clienteResponseMapper;
+	ClientResponseMapper clienteResponseMapper;
 	@Inject
-	ClienteUpdateMapper clienteUpdateMapper;
+	ClientUpdateMapper clienteUpdateMapper;
 	@Inject
-	CuentaResponseMapper cuentaResponseMapper;
+	BankAccountResponseMapper cuentaResponseMapper;
 	
 	@GET  // GET /clientes
 	@Produces(MediaType.APPLICATION_JSON)  // Devuelve un JSON
 	public List<ClienteResponseDTO> listAll() {
-	    List<Cliente> clientes = clienteService.findAll();
+	    List<Client> clientes = clienteService.findAll();
 	    return clienteResponseMapper.toClienteResponseDTOList(clientes);
 	}
 	
@@ -53,7 +52,7 @@ public class ClienteController {
 	@Path("/{id}") 
 	@Produces(MediaType.APPLICATION_JSON)
 	public ClienteResponseDTO findById(@PathParam("id") Long id) {
-		Cliente cliente = clienteService.findById(id);
+		Client cliente = clienteService.findById(id);
 		return clienteResponseMapper.toClienteResponseDTO(cliente);
 	}
 	
@@ -61,17 +60,17 @@ public class ClienteController {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response create(ClienteRequestDTO clienteDTO) {
-	    Cliente cliente = clienteRequestMapper.toCliente(clienteDTO);
+	    Client cliente = clienteRequestMapper.toCliente(clienteDTO);
 	    clienteService.save(cliente);
 		return Response.status(Response.Status.CREATED)
-		 .entity(Map.of("id", cliente.getIdCliente()))
+		 .entity(Map.of("id", cliente.getClientId()))
 		 .build();	
 	}
 	
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response update(ClienteUpdateDTO clienteDTO) {
-		Cliente cliente = clienteUpdateMapper.toCliente(clienteDTO);
+		Client cliente = clienteUpdateMapper.toCliente(clienteDTO);
 	    clienteService.update(cliente);
 	    return Response.ok().build();  // 200 OK
 	}
@@ -87,7 +86,7 @@ public class ClienteController {
 	@Path("/{id}/cuentas")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<CuentaResponseDTO> findCuentasCliente(@PathParam("id") Long id) {
-		List<Cuenta> cuentas = cuentaService.findByIdCliente(id);
+		List<BankAccount> cuentas = cuentaService.findByIdCliente(id);
 		List<CuentaResponseDTO> cuentasDTO = cuentaResponseMapper.toCuentaResponseDTOList(cuentas);
 		return cuentasDTO;
 	}
@@ -96,14 +95,14 @@ public class ClienteController {
 	@Path("/{id}/cuentas")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response saveCuenta(@PathParam("id") Long idCliente, Cuenta cuenta) {
+	public Response saveCuenta(@PathParam("id") Long idCliente, BankAccount cuenta) {
 		
-			Cliente cliente = new Cliente();
+			Client cliente = new Client();
 			
-			cliente.setIdCliente(idCliente);
+			cliente.setClientId(idCliente);
 				
 	        // Asociar solo el ID
-	        cuenta.setCliente(cliente);
+	        cuenta.setClient(cliente);
 
 	        cuentaService.save(cuenta);
 

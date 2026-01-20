@@ -5,16 +5,16 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import com.imalex28.crudclientes.dto.client.ClienteUpdateDTO;
-import com.imalex28.crudclientes.model.Cliente;
+import com.imalex28.crudclientes.model.Client;
 
 @Mapper(componentModel = "cdi")
-public interface ClienteUpdateMapper {
+public interface ClientUpdateMapper {
 
-    @Mapping(source = "id", target = "idCliente")
-    @Mapping(source = "nombre", target = "nombre")
-    @Mapping(source = "apellidos", target = "apellidos")
+    @Mapping(source = "id", target = "clientId")
+    @Mapping(source = "nombre", target = "name")
+    @Mapping(source = "apellidos", target = "surname")
     @Mapping(source = "email", target = "email")
     @Mapping(source = "registerDate", target = "registerDate")
-    Cliente toCliente(ClienteUpdateDTO dto);
+    Client toCliente(ClienteUpdateDTO dto);
 
 }

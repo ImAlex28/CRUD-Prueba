@@ -19,14 +19,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.imalex28.crudclientes.model.Task;
-import com.imalex28.crudclientes.repository.ClienteRepository;
+import com.imalex28.crudclientes.repository.ClientRepository;
 import com.imalex28.crudclientes.repository.TaskRepository;
 import com.imalex28.crudclientes.service.ClientCleanupService;
 
 @ExtendWith(MockitoExtension.class)
 public class ClientCleanupServiceTest {
 
-  @Mock ClienteRepository clientRepository;
+  @Mock ClientRepository clientRepository;
   @Mock TaskRepository taskRepository;
 
   @InjectMocks ClientCleanupService service;

@@ -12,9 +12,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.imalex28.crudclientes.model.Cliente;
-import com.imalex28.crudclientes.repository.ClienteRepository;
-import com.imalex28.crudclientes.service.ClienteService;
+import com.imalex28.crudclientes.model.Client;
+import com.imalex28.crudclientes.repository.ClientRepository;
+import com.imalex28.crudclientes.service.ClientService;
 
 import jakarta.ws.rs.NotFoundException;
 
@@ -23,27 +23,27 @@ public class ClienteServiceTest {
 	
 
 	  @Mock
-	  ClienteRepository clienteRepository;
+	  ClientRepository clienteRepository;
 
 	  @InjectMocks
-	  ClienteService service;
+	  ClientService service;
 
 
 	  // ---------- findAll ----------
 	  @Test
 	  void findAll_devuelveListaDelRepositorio() {
-		Cliente c1 = new Cliente();
-		Cliente c2 = new Cliente();
-		c1.setIdCliente(1L);
-		c2.setIdCliente(2L);
+		Client c1 = new Client();
+		Client c2 = new Client();
+		c1.setClientId(1L);
+		c2.setClientId(2L);
 		
 		when(clienteRepository.findAll()).thenReturn(List.of(c1,c2));
 		
-		List<Cliente> result = service.findAll();
+		List<Client> result = service.findAll();
 		
 		assertNotNull(result);
-		assertEquals(1L,result.get(0).getIdCliente());
-		assertEquals(2L,result.get(1).getIdCliente());
+		assertEquals(1L,result.get(0).getClientId());
+		assertEquals(2L,result.get(1).getClientId());
 		verify(clienteRepository, times(1)).findAll();
 		verifyNoMoreInteractions(clienteRepository);
 	}
@@ -51,15 +51,15 @@ public class ClienteServiceTest {
 	  // ---------- findById (OK) ----------
 	  @Test
 	  void findById_ok_devuelveCliente() {
-		  Cliente cliente = new Cliente();
-		  cliente.setIdCliente(1L);
+		  Client cliente = new Client();
+		  cliente.setClientId(1L);
 		  
 		  when(clienteRepository.findById(1L)).thenReturn(cliente);
 		  
-		  Cliente result = service.findById(1L);
+		  Client result = service.findById(1L);
 		  
 		  assertNotNull(result);
-		  assertEquals(1L, cliente.getIdCliente());
+		  assertEquals(1L, cliente.getClientId());
 		  verify(clienteRepository, times(1)).findById(1L);
 		  verifyNoMoreInteractions(clienteRepository);
 	  }
@@ -67,8 +67,8 @@ public class ClienteServiceTest {
 	  // ---------- findById (KO) ----------
 	  @Test
 	  void findById_ko_clienteNotFound() {
-		  Cliente cliente = new Cliente();
-		  cliente.setIdCliente(999L);
+		  Client cliente = new Client();
+		  cliente.setClientId(999L);
 		  
 		  when(clienteRepository.findById(999L)).thenReturn(null);
 		  
@@ -83,8 +83,8 @@ public class ClienteServiceTest {
 	  // ---------- save ---------- 
 	  @Test
 	  void save_delegaEnElRepo() {
-		  Cliente cliente = new Cliente();
-		  cliente.setIdCliente(1L);
+		  Client cliente = new Client();
+		  cliente.setClientId(1L);
 		  cliente.setEmail("ejemplo@ejemplo.com");
 		  
 		  service.save(cliente);
@@ -98,8 +98,8 @@ public class ClienteServiceTest {
 	  // ---------- update (OK) ---------- 
 	  @Test
 	  void update_ok_actualiza() {
-		  Cliente cliente = new Cliente();
-		  cliente.setIdCliente(1L);
+		  Client cliente = new Client();
+		  cliente.setClientId(1L);
 		  when(clienteRepository.findById(1L)).thenReturn(cliente);
 		  
 		  service.update(cliente);
@@ -112,8 +112,8 @@ public class ClienteServiceTest {
 	  // ---------- update (KO) ---------- 
 	  @Test
 	  void update_ko_noExisteCliente() {
-		  Cliente cliente = new Cliente();
-		  cliente.setIdCliente(999L);
+		  Client cliente = new Client();
+		  cliente.setClientId(999L);
 		  when(clienteRepository.findById(999L)).thenReturn(null);
 
 		  NotFoundException ex = assertThrows(NotFoundException.class, () -> service.update(cliente));
@@ -129,7 +129,7 @@ public class ClienteServiceTest {
 	  // ---------- delete (OK) ----------
 	  @Test
 	  void delete_existeElimina() {
-	    when(clienteRepository.findById(77L)).thenReturn(new Cliente());
+	    when(clienteRepository.findById(77L)).thenReturn(new Client());
 
 	    service.delete(77L);
 

@@ -15,19 +15,19 @@ import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 
 import com.imalex28.crudclientes.dto.account.CuentaRequestDTO;
-import com.imalex28.crudclientes.mapper.CuentaRequestMapper;
-import com.imalex28.crudclientes.model.Cliente;
-import com.imalex28.crudclientes.model.Cuenta;
-import com.imalex28.crudclientes.service.ClienteService;
+import com.imalex28.crudclientes.mapper.BankAccountRequestMapper;
+import com.imalex28.crudclientes.model.Client;
+import com.imalex28.crudclientes.model.BankAccount;
+import com.imalex28.crudclientes.service.ClientService;
 
 public class CuentaRequestMapperTest {
 	
 	  // Instanciamos el mapper
-	  private final CuentaRequestMapper mapper = Mappers.getMapper(CuentaRequestMapper.class);
+	  private final BankAccountRequestMapper mapper = Mappers.getMapper(BankAccountRequestMapper.class);
 	  
 
 	  @Mock
-	  ClienteService clienteService;
+	  ClientService clienteService;
 
 
 	  @Test
@@ -42,30 +42,30 @@ public class CuentaRequestMapperTest {
 		    dto.setSaldo(1500.75);
 
 		    // Mock: el servicio devuelve un Cliente para ese id
-		    Cliente cliente = new Cliente();
-		    cliente.setIdCliente(123L);
-		    cliente.setNombre("Alejandro");
-		    cliente.setApellidos("Fernandez");
+		    Client cliente = new Client();
+		    cliente.setClientId(123L);
+		    cliente.setName("Alejandro");
+		    cliente.setSurname("Fernandez");
 		    cliente.setEmail("alejandro@example.com");
 
 		    when(clienteService.findById(123L)).thenReturn(cliente);
 
 		    // Act
-		    Cuenta entity = mapper.toCuenta(dto, clienteService);
+		    BankAccount entity = mapper.toCuenta(dto, clienteService);
 
 		    // Assert: mapeo de campos simples
 		    assertNotNull(entity);
-		    assertEquals("ES12 3456 7890 1234 5678 9012", entity.getNumeroCuenta());
-		    assertEquals("AHORRO", entity.getTipoCuenta());
-		    assertEquals(1500.75, entity.getSaldo());
+		    assertEquals("ES12 3456 7890 1234 5678 9012", entity.getAccountNumber());
+		    assertEquals("AHORRO", entity.getAccountType());
+		    assertEquals(1500.75, entity.getBalance());
 
 		    // Assert: id autogenerado ignorado (debe quedar null)
-		    assertNull(entity.getIdCuenta(), "idCuenta debe permanecer null (autogenerado)");
+		    assertNull(entity.getBankAccountId(), "idCuenta debe permanecer null (autogenerado)");
 
 		    // Assert: ManyToOne resuelto correctamente
-		    assertNotNull(entity.getCliente());
-		    assertEquals(123L, entity.getCliente().getIdCliente());
-		    assertEquals("Alejandro", entity.getCliente().getNombre());
+		    assertNotNull(entity.getClient());
+		    assertEquals(123L, entity.getClient().getClientId());
+		    assertEquals("Alejandro", entity.getClient().getName());
 
 		    // Verifica la interacción con el servicio
 		    verify(clienteService, times(1)).findById(123L);
@@ -80,7 +80,7 @@ public class CuentaRequestMapperTest {
 		  CuentaRequestDTO dto = null;
 
 		  // Act
-		  Cuenta entity = mapper.toCuenta(dto, clienteService);
+		  BankAccount entity = mapper.toCuenta(dto, clienteService);
 
 		  // Assert
 		  assertNull(entity);

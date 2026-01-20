@@ -14,8 +14,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.imalex28.crudclientes.controller.auth.JwtGenerator;
-import com.imalex28.crudclientes.model.Cliente;
-import com.imalex28.crudclientes.repository.ClienteRepository;
+import com.imalex28.crudclientes.model.Client;
+import com.imalex28.crudclientes.repository.ClientRepository;
 import com.imalex28.crudclientes.service.auth.AuthServiceImpl;
 import com.imalex28.crudclientes.service.auth.InvalidCredentialsException;
 
@@ -23,7 +23,7 @@ import com.imalex28.crudclientes.service.auth.InvalidCredentialsException;
 public class AuthServiceTest {
 
     @Mock
-    ClienteRepository clientRepository;
+    ClientRepository clientRepository;
 
     @Mock
     JwtGenerator jwtGenerator;
@@ -35,7 +35,7 @@ public class AuthServiceTest {
     @Test
     void loginAndIssueToken_ok_devuelveToken() throws Exception {
         String email = "user@example.com";
-        Cliente cliente = new Cliente();
+        Client cliente = new Client();
         cliente.setEmail(email);
 
         when(clientRepository.findByEmail(email)).thenReturn(cliente);
@@ -56,7 +56,7 @@ public class AuthServiceTest {
     @Test
     void loginAndIssueToken_reutilizaCache_noRegeneraTokenSiNoExpira() throws Exception {
         String email = "cache@example.com";
-        Cliente cliente = new Cliente();
+        Client cliente = new Client();
         cliente.setEmail(email);
 
         when(clientRepository.findByEmail(email)).thenReturn(cliente);
@@ -101,7 +101,7 @@ public class AuthServiceTest {
     @Test
     void loginAndIssueToken_ko_passwordNull_lanzaInvalidCredentials() {
         String email = "user@example.com";
-        Cliente cliente = new Cliente();
+        Client cliente = new Client();
         cliente.setEmail(email);
 
         when(clientRepository.findByEmail(email)).thenReturn(cliente);
@@ -119,7 +119,7 @@ public class AuthServiceTest {
     @Test
     void logout_invalidaToken_yFuerzaNuevaFirma() throws Exception {
         String email = "logout@example.com";
-        Cliente cliente = new Cliente();
+        Client cliente = new Client();
         cliente.setEmail(email);
 
         when(clientRepository.findByEmail(email)).thenReturn(cliente);
@@ -146,7 +146,7 @@ public class AuthServiceTest {
     @Test
     void invalidateUserToken_invalidaCache_yFuerzaNuevaFirma() throws Exception {
         String email = "invalidate@example.com";
-        Cliente cliente = new Cliente();
+        Client cliente = new Client();
         cliente.setEmail(email);
 
         when(clientRepository.findByEmail(email)).thenReturn(cliente);
@@ -170,7 +170,7 @@ public class AuthServiceTest {
     @Test
     void clearAllTokens_limpiaCache_yFuerzaNuevaFirma() throws Exception {
         String email = "clear@example.com";
-        Cliente cliente = new Cliente();
+        Client cliente = new Client();
         cliente.setEmail(email);
 
         when(clientRepository.findByEmail(email)).thenReturn(cliente);
@@ -194,7 +194,7 @@ public class AuthServiceTest {
     void loginAndIssueToken_cuandoJwtGeneratorFalla_lanzaRuntimeExceptionConMensajeEsperado() throws Exception {
         // Arrange: usuario válido sin token en caché
         String email = "user@example.com";
-        Cliente cliente = new Cliente();
+        Client cliente = new Client();
         cliente.setEmail(email);
 
         when(clientRepository.findByEmail(email)).thenReturn(cliente);

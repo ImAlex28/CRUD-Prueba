@@ -10,10 +10,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.imalex28.crudclientes.dto.account.CuentaUpdateDTO;
-import com.imalex28.crudclientes.mapper.CuentaUpdateMapper;
-import com.imalex28.crudclientes.model.Cliente;
-import com.imalex28.crudclientes.model.Cuenta;
-import com.imalex28.crudclientes.service.ClienteService;
+import com.imalex28.crudclientes.mapper.BankAccountUpdateMapper;
+import com.imalex28.crudclientes.model.Client;
+import com.imalex28.crudclientes.model.BankAccount;
+import com.imalex28.crudclientes.service.ClientService;
 
 import static org.mockito.Mockito.when;
 
@@ -21,10 +21,10 @@ import static org.mockito.Mockito.when;
 public class CuentaUpdateMapperTest {
 
   // Instanciamos la implementación generada por MapStruct
-  private final CuentaUpdateMapper mapper = Mappers.getMapper(CuentaUpdateMapper.class);
+  private final BankAccountUpdateMapper mapper = Mappers.getMapper(BankAccountUpdateMapper.class);
 
   @Mock
-  ClienteService clienteService;
+  ClientService clienteService;
 
   @Test
   void toCuenta_mapeaTodosLosCampos_cuandoClienteExiste() {
@@ -37,25 +37,25 @@ public class CuentaUpdateMapperTest {
     dto.setSaldo(1234.56d);      // double según tu entity
 
     // Mock: el servicio devuelve un Cliente para ese id
-    Cliente cliente = new Cliente();
-    cliente.setIdCliente(2002L);
-    cliente.setNombre("Alejandro");
+    Client cliente = new Client();
+    cliente.setClientId(2002L);
+    cliente.setName("Alejandro");
     when(clienteService.findById(2002L)).thenReturn(cliente);
 
     // Act
-    Cuenta entity = mapper.toCuenta(dto, clienteService);
+    BankAccount entity = mapper.toCuenta(dto, clienteService);
 
     // Assert: mapeo correcto a la entidad
     assertNotNull(entity);
-    assertEquals(1001L, entity.getIdCuenta());
-    assertEquals("ES12 3456 7890 1234 5678 9012", entity.getNumeroCuenta());
-    assertEquals("AHORRO", entity.getTipoCuenta());
-    assertEquals(1234.56d, entity.getSaldo(), 0.0001d);
+    assertEquals(1001L, entity.getBankAccountId());
+    assertEquals("ES12 3456 7890 1234 5678 9012", entity.getAccountNumber());
+    assertEquals("AHORRO", entity.getAccountType());
+    assertEquals(1234.56d, entity.getBalance(), 0.0001d);
 
     // Asociación ManyToOne resuelta con el Cliente del servicio
-    assertNotNull(entity.getCliente());
-    assertEquals(2002L, entity.getCliente().getIdCliente());
-    assertEquals("Alejandro", entity.getCliente().getNombre());
+    assertNotNull(entity.getClient());
+    assertEquals(2002L, entity.getClient().getClientId());
+    assertEquals("Alejandro", entity.getClient().getName());
   }
 
   @Test
@@ -71,15 +71,15 @@ public class CuentaUpdateMapperTest {
     when(clienteService.findById(null)).thenReturn(null);
 
     // Act
-    Cuenta entityNullId = mapper.toCuenta(dtoNullId, clienteService);
+    BankAccount entityNullId = mapper.toCuenta(dtoNullId, clienteService);
 
     // Assert
     assertNotNull(entityNullId);
-    assertEquals(1L, entityNullId.getIdCuenta());
-    assertEquals("ACC-NULL", entityNullId.getNumeroCuenta());
-    assertEquals("CORRIENTE", entityNullId.getTipoCuenta());
-    assertEquals(0.0d, entityNullId.getSaldo(), 0.0001d);
-    assertNull(entityNullId.getCliente(), "Con idCliente null, la asociación debe ser null");
+    assertEquals(1L, entityNullId.getBankAccountId());
+    assertEquals("ACC-NULL", entityNullId.getAccountNumber());
+    assertEquals("CORRIENTE", entityNullId.getAccountType());
+    assertEquals(0.0d, entityNullId.getBalance(), 0.0001d);
+    assertNull(entityNullId.getClient(), "Con idCliente null, la asociación debe ser null");
 
     // Arrange: idCliente con valor pero el servicio no encuentra al cliente
     CuentaUpdateDTO dtoNotFound = new CuentaUpdateDTO();
@@ -92,15 +92,15 @@ public class CuentaUpdateMapperTest {
     when(clienteService.findById(999L)).thenReturn(null);
 
     // Act
-    Cuenta entityNotFound = mapper.toCuenta(dtoNotFound, clienteService);
+    BankAccount entityNotFound = mapper.toCuenta(dtoNotFound, clienteService);
 
     // Assert
     assertNotNull(entityNotFound);
-    assertEquals(2L, entityNotFound.getIdCuenta());
-    assertEquals("ACC-404", entityNotFound.getNumeroCuenta());
-    assertEquals("AHORRO", entityNotFound.getTipoCuenta());
-    assertEquals(50.0d, entityNotFound.getSaldo(), 0.0001d);
-    assertNull(entityNotFound.getCliente(), "Si el servicio no retorna cliente, la asociación debe ser null");
+    assertEquals(2L, entityNotFound.getBankAccountId());
+    assertEquals("ACC-404", entityNotFound.getAccountNumber());
+    assertEquals("AHORRO", entityNotFound.getAccountType());
+    assertEquals(50.0d, entityNotFound.getBalance(), 0.0001d);
+    assertNull(entityNotFound.getClient(), "Si el servicio no retorna cliente, la asociación debe ser null");
   }
 
   @Test
@@ -115,16 +115,16 @@ public class CuentaUpdateMapperTest {
     when(clienteService.findById(null)).thenReturn(null);
 
     // Act
-    Cuenta entity = mapper.toCuenta(dto, clienteService);
+    BankAccount entity = mapper.toCuenta(dto, clienteService);
 
     // Assert
     assertNotNull(entity);
-    assertNull(entity.getIdCuenta());
-    assertNull(entity.getNumeroCuenta());
-    assertNull(entity.getTipoCuenta());
-    assertNull(entity.getCliente());
+    assertNull(entity.getBankAccountId());
+    assertNull(entity.getAccountNumber());
+    assertNull(entity.getAccountType());
+    assertNull(entity.getClient());
 
-    assertEquals(0.0d, entity.getSaldo(), 0.0001d);
+    assertEquals(0.0d, entity.getBalance(), 0.0001d);
 
   }
   
@@ -134,7 +134,7 @@ public class CuentaUpdateMapperTest {
     CuentaUpdateDTO dto = null;
 
     // Act
-    Cuenta entity = mapper.toCuenta(dto, clienteService);
+    BankAccount entity = mapper.toCuenta(dto, clienteService);
 
     // Assert
     assertNull(entity);
