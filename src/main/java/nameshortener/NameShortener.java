@@ -16,6 +16,11 @@ public class NameShortener {
    
     private static final String INITIAL_REGEX = "^[A-ZÁÉÍÓÚÑ]\\.\\s*$|^[A-ZÁÉÍÓÚÑ]\\.$";
     private static final Locale LOCALE = Locale.ROOT;
+    
+	private static final Set<String> REMOVABLE_PARTICLES = Set.of(
+	        "DE", "DEL", "LA", "LAS", "LOS", "Y", "E", "DA","DO","DAS","DOS","DI","DU","VAN","VON"
+	);
+
 
     /**
      * Método que invocará el endpoint para acortar los nombres
@@ -37,7 +42,7 @@ public class NameShortener {
 
 
     	        // --- Helpers ---
-    	        Function<String, String> toInitial = this::toInitial;
+    	        Function<String, String> toInitialSkippingParticles = this::toInitialSkippingParticles;
     	        Function<List<String>, String> joinWithSpaces = this::joinWithSpaces;
 
     	        // ============== VARIANTE 1 =========
@@ -45,7 +50,7 @@ public class NameShortener {
 				String v1 = buildVariant1(
 				        firstGiven, additionalGivens,
 				        primarySurname, secondarySurname,
-				        toInitial, joinWithSpaces
+				        toInitialSkippingParticles, joinWithSpaces
 				);
 
 
@@ -54,7 +59,7 @@ public class NameShortener {
 				String v2 = buildVariant2(
 				        givenNameTokens,
 				        primarySurname, secondarySurname,
-				        toInitial, joinWithSpaces
+				        toInitialSkippingParticles, joinWithSpaces
 				);
 
 
@@ -63,7 +68,7 @@ public class NameShortener {
 				String v3 = buildVariant3(
 				        firstGiven, additionalGivens,
 				        primarySurname, secondarySurname,
-				        toInitial, joinWithSpaces
+				        toInitialSkippingParticles, joinWithSpaces
 				);
 
     	        // Comprobación final: nunca superar límite y poner en mayus (MISMA LÓGICA)
@@ -81,7 +86,7 @@ public class NameShortener {
             List<String> additionalGivens,
             String primarySurname,
             String secondarySurname,
-            Function<String, String> toInitial,
+            Function<String, String> toInitialSkippingParticles,
             Function<List<String>, String> joinWithSpaces
     ) {
         // Prioriza: Primer Nombre (full) + Primer Apellido (full)
@@ -98,7 +103,7 @@ public class NameShortener {
 
         List<Integer> idxAdditional = new ArrayList<>();
         for (String g : additionalGivens) {
-            parts.add(toInitial.apply(g));
+            parts.add(toInitialSkippingParticles.apply(g));
             idxAdditional.add(parts.size() - 1);
         }
 
@@ -109,10 +114,24 @@ public class NameShortener {
         idxSurname2 = parts.size() - 1;
 
         String value = joinWithSpaces.apply(parts);
+        
+        if (value.length() > MAX_CHAR_LIMIT) {
+            // 0) Intento: quitar partículas (DE, DEL, LA, LOS...) de los apellidos antes de pasar a iniciales
+            String strippedS1 = stripParticlesFromSurname(primarySurname);
+            String strippedS2 = stripParticlesFromSurname(secondarySurname);
+
+            boolean changed = !strippedS1.equals(primarySurname) || !strippedS2.equals(secondarySurname);
+
+            if (changed) {
+                parts.set(idxSurname1, strippedS1);
+                parts.set(idxSurname2, strippedS2);
+                value = joinWithSpaces.apply(parts);
+            }
+        }
 
         if (value.length() > MAX_CHAR_LIMIT) {
             // 1) surname2 -> inicial
-            parts.set(idxSurname2, toInitial.apply(secondarySurname));
+            parts.set(idxSurname2, toInitialSkippingParticles.apply(secondarySurname));
             value = joinWithSpaces.apply(parts);
         }
 
@@ -132,13 +151,13 @@ public class NameShortener {
 
         if (value.length() > MAX_CHAR_LIMIT) {
             // 3) firstGiven -> inicial
-            parts.set(idxFirstGiven, toInitial.apply(firstGiven));
+            parts.set(idxFirstGiven, toInitialSkippingParticles.apply(firstGiven));
             value = joinWithSpaces.apply(parts);
         }
 
         if (value.length() > MAX_CHAR_LIMIT) {
             // 4) surname1 -> inicial
-            parts.set(idxSurname1, toInitial.apply(primarySurname));
+            parts.set(idxSurname1, toInitialSkippingParticles.apply(primarySurname));
             value = joinWithSpaces.apply(parts);
         }
 
@@ -167,7 +186,7 @@ public class NameShortener {
             List<String> givenNameTokens,
             String primarySurname,
             String secondarySurname,
-            Function<String, String> toInitial,
+            Function<String, String> toInitialSkippingParticles,
             Function<List<String>, String> joinWithSpaces
     ) {
         // Prioriza: Segundo nombre (o el más largo si hay más de uno) + Primer Apellido
@@ -181,7 +200,7 @@ public class NameShortener {
             if (i == preferredGivenIdx) {
                 parts.add(g); // preferido en full
             } else {
-                parts.add(toInitial.apply(g)); // el resto iniciales
+                parts.add(toInitialSkippingParticles.apply(g)); // el resto iniciales
             }
             idxGiven.add(parts.size() - 1);
         }
@@ -196,10 +215,24 @@ public class NameShortener {
         idxSurname2 = parts.size() - 1;
 
         String value = joinWithSpaces.apply(parts);
+        
+
+		if (value.length() > MAX_CHAR_LIMIT) {
+		    // 0) Quitar partículas dentro de los apellidos compuestos
+		    String strippedS1 = stripParticlesFromSurname(primarySurname);
+		    String strippedS2 = stripParticlesFromSurname(secondarySurname);
+		    boolean changed = !strippedS1.equals(primarySurname) || !strippedS2.equals(secondarySurname);
+		
+		    if (changed) {
+		        parts.set(idxSurname1, strippedS1);
+		        parts.set(idxSurname2, strippedS2);
+		        value = joinWithSpaces.apply(parts);
+		    }
+		}
 
         if (value.length() > MAX_CHAR_LIMIT) {
             // 1) surname2 -> inicial
-            parts.set(idxSurname2, toInitial.apply(secondarySurname));
+            parts.set(idxSurname2, toInitialSkippingParticles.apply(secondarySurname));
             value = joinWithSpaces.apply(parts);
         }
 
@@ -228,14 +261,14 @@ public class NameShortener {
             // 3) preferido -> inicial (mantener surname1)
             if (idxPreferredGiven >= 0) {
                 String preferredOriginal = givenNameTokens.get(preferredGivenIdx);
-                parts.set(idxPreferredGiven, toInitial.apply(preferredOriginal));
+                parts.set(idxPreferredGiven, toInitialSkippingParticles.apply(preferredOriginal));
                 value = joinWithSpaces.apply(parts);
             }
         }
 
         if (value.length() > MAX_CHAR_LIMIT) {
             // 4) surname1 -> inicial
-            parts.set(idxSurname1, toInitial.apply(primarySurname));
+            parts.set(idxSurname1, toInitialSkippingParticles.apply(primarySurname));
             value = joinWithSpaces.apply(parts);
         }
 
@@ -292,14 +325,14 @@ public class NameShortener {
             List<String> additionalGivens,
             String primarySurname,
             String secondarySurname,
-            Function<String, String> toInitial,
+            Function<String, String> toInitialSkippingParticles,
             Function<List<String>, String> joinWithSpaces
     ) {
         // Nombre en inicial + apellidos completos; si no caben, apellidos a iniciales hasta cumplir 24
         List<String> parts = new ArrayList<>();
 
-        if (!firstGiven.isBlank()) parts.add(toInitial.apply(firstGiven));
-        for (String g : additionalGivens) parts.add(toInitial.apply(g));
+        if (!firstGiven.isBlank()) parts.add(toInitialSkippingParticles.apply(firstGiven));
+        for (String g : additionalGivens) parts.add(toInitialSkippingParticles.apply(g));
 
         int idxSurname1At, idxSurname2At;
 
@@ -310,16 +343,30 @@ public class NameShortener {
         idxSurname2At = parts.size() - 1;
 
         String value = joinWithSpaces.apply(parts);
+        
+
+		if (value.length() > MAX_CHAR_LIMIT) {
+		    // 0) Quitar partículas dentro de apellidos antes de degradar a iniciales
+		    String strippedS1 = stripParticlesFromSurname(primarySurname);
+		    String strippedS2 = stripParticlesFromSurname(secondarySurname);
+		    boolean changed = !strippedS1.equals(primarySurname) || !strippedS2.equals(secondarySurname);
+		
+		    if (changed) {
+		        parts.set(idxSurname1At, strippedS1);
+		        parts.set(idxSurname2At, strippedS2);
+		        value = joinWithSpaces.apply(parts);
+		    }
+		}
 
         if (value.length() > MAX_CHAR_LIMIT) {
             // 1) surname2 -> inicial
-            parts.set(idxSurname2At, toInitial.apply(secondarySurname));
+            parts.set(idxSurname2At, toInitialSkippingParticles.apply(secondarySurname));
             value = joinWithSpaces.apply(parts);
         }
 
         if (value.length() > MAX_CHAR_LIMIT) {
             // 2) surname1 -> inicial
-            parts.set(idxSurname1At, toInitial.apply(primarySurname));
+            parts.set(idxSurname1At, toInitialSkippingParticles.apply(primarySurname));
             value = joinWithSpaces.apply(parts);
         }
 
@@ -371,6 +418,29 @@ public class NameShortener {
         return (token == null || token.isBlank())
                 ? ""
                 : token.substring(0, 1).toUpperCase(LOCALE) + ".";
+    }
+    
+    /**
+     * Devuelve la inicial del primer token NO partícula de una frase.
+     * Ej: "DEL REY" -> "R.", "DE LA TORRE" -> "T.", "VON BRAUN" -> "B."
+     * Si no encuentra token válido, fallback a toInitial(phrase).
+     */
+    private String toInitialSkippingParticles(String phrase) {
+        if (phrase == null || phrase.isBlank()) return "";
+
+        String s = phrase.trim().replaceAll("\\s+", " ");
+        if (s.isEmpty()) return "";
+
+        for (String tok : s.split(" ")) {
+            if (tok == null) continue;
+            String t = tok.trim();
+            if (t.isEmpty()) continue;
+            if (!isParticle(t)) {
+                return t.substring(0, 1).toUpperCase(LOCALE) + ".";
+            }
+        }
+        // Si todo eran partículas, cae al comportamiento original
+        return toInitial(phrase);
     }
 
 	/**
@@ -426,6 +496,38 @@ public class NameShortener {
 	    if (result.length() <= limit) return result;
 	    return result.substring(0, limit).trim();
 	}
+	
+	/**
+	 * Comprueba si un token contiene "DE, DEL, DE LOS" etc.
+	 * 
+	 */
+	private boolean isParticle(String token) {
+	    if (token == null) return false;
+	    String t = token.trim();
+	    if (t.isEmpty()) return false;
+	    return REMOVABLE_PARTICLES.contains(t.toUpperCase(LOCALE));
+	}
+	
+
+	/**
+	 * Elimina partículas dentro de un apellido (ej: "DE LA TORRE" -> "TORRE").
+	 * No toca palabras (ej: "DELVALLE" no cambia porque no hay espacio).
+	 */
+	private String stripParticlesFromSurname(String phrase) {
+	    if (phrase == null) return "";
+	    String s = phrase.trim().replaceAll("\\s+", " ");
+	    if (s.isEmpty()) return "";
+	
+	    String[] tokens = s.split(" ");
+	    List<String> kept = new ArrayList<>(tokens.length);
+	    for (String tok : tokens) {
+	        if (!isParticle(tok)) kept.add(tok);
+	    }
+	    // Si se quedara vacío, devolvemos ""
+	    return String.join(" ", kept);
+	}
+
+
 }
 
 
