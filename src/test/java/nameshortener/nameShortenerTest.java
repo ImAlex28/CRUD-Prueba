@@ -162,6 +162,19 @@ class NameShortenerTest {
                     "SANTIAGO R. Y CAJAL",
                     "S. RAMON Y CAJAL",
                     "S. R. Y CAJAL" 
+            ),
+            
+            //16) Carlos Sainz Del Rey Jiménez (28) -> Sainz / Del Rey Jimenez
+            Arguments.of("Carlos","Sainz","Del Rey Jiménez",
+            		"CARLOS SAINZ REY JIMENEZ",
+            		"CARLOS SAINZ REY JIMENEZ",
+            		"C. SAINZ DEL REY JIMENEZ"
+            ),
+          //16) Carlos Sainz Del Rey Jiménez García (34) -> Sainz / Del Rey Jimenez García
+            Arguments.of("Carlos","Sainz","Del Rey Jiménez García",
+            		"CARLOS SAINZ R.",
+            		"CARLOS SAINZ R.",
+            		"C. SAINZ R."
             )
         );
     }
