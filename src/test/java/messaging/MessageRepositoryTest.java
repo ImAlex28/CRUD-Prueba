@@ -33,7 +33,6 @@ class MessageRepositoryTest {
 	@Mock
 	TypedQuery<Long> query;
 
-
     @InjectMocks
     MessageRepository repo;
 
@@ -85,7 +84,6 @@ class MessageRepositoryTest {
 	
 	    assertEquals(2L, result);
 	}
-
 
     @Test
     void findByProviderMessageId_returns_first() {

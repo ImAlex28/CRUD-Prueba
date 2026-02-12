@@ -3,8 +3,6 @@ package messaging.repository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.LockModeType;
-import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import messaging.model.Message;
 import messaging.model.SendStatus;

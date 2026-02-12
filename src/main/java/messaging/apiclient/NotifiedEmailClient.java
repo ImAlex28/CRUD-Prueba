@@ -6,8 +6,6 @@ import org.jboss.resteasy.reactive.RestResponse;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
-import messaging.dto.SendEmailRequest;
-
 import org.eclipse.microprofile.rest.client.annotation.RegisterProvider;
 
 @Path("/v1/email")
