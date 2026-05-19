@@ -1,30 +1,28 @@
-/*package messaging.worker;
+package messaging.worker;
 
 import java.time.Instant;
 import java.util.List;
-
-import org.eclipse.microprofile.rest.client.inject.RestClient;
-
 
 import io.quarkus.scheduler.Scheduled;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import jakarta.inject.Inject;
-import messaging.apiclient.NotifiedEmailClient;
+import messaging.apiclient.MailerSendClient;
 import messaging.model.Message;
 import messaging.repository.MessageRepository;
 
-public class MessageSenderJob {
+public class MessageSenderJob2 {
 
     @Inject
+	public
     MessageRepository repo;
 
     @Inject
-    @RestClient
-    NotifiedEmailClient emailClient;
+	public
+    MailerSendClient emailClient;
     
 
-	private static final Logger log = LoggerFactory.getLogger(MessageSenderJob.class);
+	private static final Logger log = LoggerFactory.getLogger(MessageSenderJob2.class);
 
 
     @Scheduled(identity = "message-sender-job", every = "{messaging.sender.interval:60s}")
@@ -51,36 +49,27 @@ public class MessageSenderJob {
                         id, safeEmail(message.getTo()), trim(message.getSubject(), 200), htmlPreview, textPreview);
 
                 var res = emailClient.sendEmail(
+                	message.getFrom(),
                     message.getTo(),       
                     message.getSubject(),  
-                    message.getBodyHtml(), 
-                    message.getBodyText()   
+                    message.getBodyText(), 
+                    message.getBodyHtml()   
                 );
 
 
-                int status = res.getStatus();
+                int status = res.responseStatusCode;
                 log.info("[Worker] id={} Respuesta HTTP {}", id, status);
 
-                if (res.getStatus() >= 200 && res.getStatus() < 300) {
+                if (res.responseStatusCode >= 200 && res.responseStatusCode < 300) {
                     repo.markSent(id, Instant.now(), null);
 
-                    String body = res.getEntity();
-                      String providerMessageId = null;
-                      if (body != null && !body.isBlank()) {
-                          try {
-                              io.vertx.core.json.JsonObject json = new io.vertx.core.json.JsonObject(body);
-                              providerMessageId = json.getString("id");
-                          } catch (Exception parseEx) {
-                              log.warn("[Worker] id={} Respuesta 2xx pero no JSON parseable: '{}'", id, body);
-                          }
-                      }
-                      repo.setProviderMessageId(id, providerMessageId);
+	                String providerMessageId = res.messageId;
+	                repo.setProviderMessageId(id, providerMessageId);
 
 					
                 } else {
-                    repo.markFailed(id, "Error HTTP " + res.getStatus());
-                    String reason = res.getStatusInfo() != null ? res.getStatusInfo().getReasonPhrase() : "";
-                    log.warn("[Worker] id={} marcado como FAILED por HTTP {} {}", id, status, reason);
+                    repo.markFailed(id, "Error HTTP " + res.responseStatusCode);
+                    log.warn("[Worker] id={} marcado como FAILED por HTTP {}", id, status);
                 }
             } catch (Exception ex) {
             	log.error("[Worker] id={} Excepción enviando al proveedor: {}", id, ex.toString(), ex);
@@ -105,4 +94,4 @@ public class MessageSenderJob {
         return flat.length() > max ? flat.substring(0, max) + "…" : flat;
     }
 
-}*/
+}
